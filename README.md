@@ -18,7 +18,6 @@ Optainer Management fue creado para abordar los desafíos en la organización y 
 
 - **Gestión de contenedores**: Control y organización en tiempo real.
 - **Visualización 3D**: Interfaz gráfica para ver la disposición de contenedores.
-- **Autenticación segura**: Implementación de JWT para la seguridad.
 - **Conexión a PostgreSQL**: Manejo seguro y eficiente de datos.
 - **Diseño responsivo**: Adaptado para dispositivos móviles y tablets.
 
