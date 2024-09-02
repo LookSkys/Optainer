@@ -85,6 +85,8 @@ optainer-management/
 │   ├── objects/         # Modelos y objetos 3D
 │   ├── controls/        # Controles de la cámara y la escena
 │   └── renderer.js      # Configuración del renderizador Three.js
+├── node_modules/        # Esta carpeta contiene las dependencias instaladas por npm
+├── package-lock.json
 ├── .gitignore
 ├── README.md
 └── package.json
