@@ -9,9 +9,6 @@ Optainer Management es una solución web diseñada para optimizar la gestión y 
 - [Prerrequisitos](#prerrequisitos)
 - [Instalación](#instalación)
 - [Estructura del Proyecto](#estructura-del-proyecto)
-- [Uso](#uso)
-- [Contribuir](#contribuir)
-- [Licencia](#licencia)
 
 ## Introducción
 
