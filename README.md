@@ -1,6 +1,6 @@
-# Optainer Management
+# Optainer 
 
-Optainer Management es una solución web diseñada para optimizar la gestión y organización de contenedores en almacenes extraportuarios. Este proyecto utiliza un stack moderno, incluyendo React, Node.js, Express, MongoDB y Three.js, para ofrecer una plataforma eficiente y segura que facilita el control y seguimiento de operaciones logísticas, con visualización 3D de la disposición de los contenedores.
+Optainer es una solución web diseñada para optimizar la gestión y organización de contenedores en almacenes extraportuarios. Este proyecto utiliza un stack moderno, incluyendo React, Node.js, Express, MongoDB y Three.js, para ofrecer una plataforma eficiente y segura que facilita el control y seguimiento de operaciones logísticas, con visualización 3D de la disposición de los contenedores.
 
 ## Índice
 
@@ -12,7 +12,7 @@ Optainer Management es una solución web diseñada para optimizar la gestión y 
 
 ## Introducción
 
-Optainer Management fue creado para abordar los desafíos en la organización y seguimiento de contenedores dentro de almacenes extraportuarios. La aplicación permite a los operadores gestionar contenedores en tiempo real, visualizar la disposición en 3D mediante Three.js, y asegurar la integridad de los datos mediante un backend robusto basado en Express y MongoDB.
+Optainer fue creado para abordar los desafíos en la organización y seguimiento de contenedores dentro de almacenes extraportuarios. La aplicación permite a los operadores gestionar contenedores en tiempo real, visualizar la disposición en 3D mediante Three.js, y asegurar la integridad de los datos mediante un backend robusto basado en Express y MongoDB.
 
 ## Características
 
