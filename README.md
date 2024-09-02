@@ -49,22 +49,12 @@ Para configurar y ejecutar Optainer Management localmente, sigue estos pasos:
     cd client && npm install
     ```
 
-4. Configura las variables de entorno en un archivo `.env` en la carpeta `server`:
-    ```env
-    DB_HOST=localhost
-    DB_USER=tu_usuario
-    DB_PASS=tu_contraseña
-    DB_NAME=optainer
-    JWT_SECRET=tu_secreto
-    PORT=5000
-    ```
-
-5. Inicia el servidor:
+4. Inicia el servidor:
     ```bash
     cd server && npm start
     ```
 
-6. Inicia la aplicación cliente:
+5. Inicia la aplicación cliente:
     ```bash
     cd client && npm start
     ```
