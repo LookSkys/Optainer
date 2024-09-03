@@ -1,4 +1,4 @@
-# Optainer 
+# Optainer
 
 Optainer es una solución web diseñada para optimizar la gestión y organización de contenedores en almacenes extraportuarios. Este proyecto utiliza un stack moderno, incluyendo React, Node.js, Express, MongoDB y Three.js, para ofrecer una plataforma eficiente y segura que facilita el control y seguimiento de operaciones logísticas, con visualización 3D de la disposición de los contenedores.
 
@@ -32,39 +32,55 @@ Asegúrate de tener lo siguiente instalado en tu entorno de desarrollo:
 
 ## Instalación
 
-Para configurar y ejecutar Optainer Management localmente, sigue estos pasos:
+Para configurar y ejecutar Optainer localmente, sigue estos pasos:
 
-1. Clona el repositorio:
-    ```bash
-    git clone https://github.com/usuario/optainer-management.git
-    ```
+### 1. Clonar el Repositorio
 
-2. Instala las dependencias del servidor:
-    ```bash
-    cd server && npm install
-    ```
+```bash
+git clone https://github.com/LookSkys/Optainer.git
+```
 
-3. Instala las dependencias del cliente:
-    ```bash
-    cd client && npm install
-    ```
+### 2. Configurar el Backend
+#### Navegar a la carpeta del servidor:
 
-4. Inicia el servidor:
-    ```bash
-    cd server && npm start
-    ```
+```bash
+cd server
+```
+#### Instalar las dependencias del servidor:
 
-5. Inicia la aplicación cliente:
-    ```bash
-    cd client && npm start
-    ```
+```bash
+npm install
+```
+#### Iniciar el servidor:
+
+```bash
+npm start
+```
+El servidor se ejecutará en http://localhost:5000.
+
+### 3. Configurar el Frontend
+#### Navegar a la carpeta del cliente:
+
+```bash
+cd ../client
+```
+
+#### Instalar las dependencias del cliente:
+
+```bash
+npm install
+```
+#### Iniciar la aplicación cliente:
+
+```bash
+npm start
+```
+La aplicación se ejecutará en http://localhost:3000.
 
 ## Estructura del Proyecto
-
 La estructura básica del proyecto es la siguiente:
-
 ```plaintext
-optainer-management/
+optainer/
 ├── client/              # Código fuente del frontend (React)
 │   ├── public/
 │   └── src/
@@ -85,9 +101,5 @@ optainer-management/
 │   ├── objects/         # Modelos y objetos 3D
 │   ├── controls/        # Controles de la cámara y la escena
 │   └── renderer.js      # Configuración del renderizador Three.js
-├── node_modules/        # Esta carpeta contiene las dependencias instaladas por npm
-├── package-lock.json
 ├── .gitignore
-├── README.md
-└── package.json
-
+└──  README.md
