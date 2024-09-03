@@ -1,0 +1,35 @@
+{
+  "name": "optainer",
+  "version": "1.0.0",
+  "description": "Solución web para la gestión y organización de contenedores en almacenes extraportuarios, con visualización 3D.",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LookSkys/Optainer.git"
+  },
+  "keywords": [
+    "contenedores",
+    "logística",
+    "3D",
+    "React",
+    "Node.js",
+    "Express",
+    "MongoDB",
+    "Three.js"
+  ],
+  "author": "Enrique Sanhueza, Bastian Pallacan, Matias Ojeda, Raul Cabrera, Ian Ramirez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LookSkys/Optainer/issues"
+  },
+  "homepage": "https://github.com/LookSkys/Optainer#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongoose": "^8.6.0",
+    "optainer": "file:"
+  }
+}
