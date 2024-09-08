@@ -1,0 +1,49 @@
+/* src/components/SideBarLateral.css */
+.sidebar-lateral {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 70px;
+    height: 100vh;
+    background-color: #cc0001;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border: 2px solid #000;
+  }
+  
+  .icon-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    margin: 10px 0;
+  }
+  
+  .icon-button:hover {
+    color: #aaaaaa;
+  }
+  
+  .top-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+  }
+  
+  .bottom-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  
+  .divider {
+    height: 6px;
+    width: 60%;
+    background: white;
+    margin: 10px 0;
+    margin-left: 15px;
+  }

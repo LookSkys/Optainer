@@ -8,21 +8,24 @@ import MapaView from './views/MapaView'
 import InventarioView from './views/InventarioView'
 import MovimientosView from './views/MovimientosView'
 import MetricasView from './views/MetricasView'
-
+import SideBarLateral from './components/SideBarLateral/SideBarLateral'
 
 function App() {
 
   return (
     <div className='App'>
-      <Navbar />
+      {/* <Navbar />
       <Routes>
         <Route path='/' element={<MapaView />} />
         <Route path='/inventario' element={<InventarioView />} />
         <Route path='/movimientos' element={<MovimientosView />} />
         <Route path='/metricas' element={<MetricasView />} />
       </Routes>
-      <Sidebar />
-      <ThreeMap /> 
+      <Sidebar /> */}
+      <SideBarLateral />
+      <div className='map-container'>
+         <ThreeMap />  
+        </div> 
     </div>
   )
 }
