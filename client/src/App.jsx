@@ -14,15 +14,20 @@ function App() {
 
   return (
     <div className='App'>
-      {/* <Navbar />
-      <Routes>
+      <div className='d-none d-lg-block'>
+        <Navbar />
+        <Sidebar /> 
+      </div>
+      {/* <Routes>
         <Route path='/' element={<MapaView />} />
         <Route path='/inventario' element={<InventarioView />} />
         <Route path='/movimientos' element={<MovimientosView />} />
         <Route path='/metricas' element={<MetricasView />} />
-      </Routes>
-      <Sidebar /> */}
-      <SideBarLateral />
+      </Routes> */}
+      <div className='d-none d-md-block d-lg-none'>
+        <SideBarLateral /> 
+      </div>
+
       <div className='map-container'>
          <ThreeMap />  
         </div> 

@@ -1,4 +1,3 @@
-// src/components/SideBarLateral.jsx
 import React from 'react';
 import { FaGlobeAmericas, FaListAlt, FaSignOutAlt, FaBars, FaBell  } from 'react-icons/fa'; // Importa los íconos
 import './SideBarLateral.css'; // Estilos separados
