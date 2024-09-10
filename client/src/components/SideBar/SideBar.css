@@ -1,15 +1,9 @@
-.sidebar {
-    height: 90px;
-    width: 100%;
+.sidebar-custom {
     background-color: #dc143c; 
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Sirve para ajustar la alineacion de los elementos  */
-    padding: 0 20px; 
+    
   }
   
   .sidebar button {
-    width: 250px;
     margin: 0 10px; /* Ajusta el margen */
     border-radius: 40px;
     border: 2px solid #000;
@@ -17,7 +11,7 @@
   }
   
   .sidebar input {
-    height: 65px;
+    height: 40px;
     width: 270px;
     padding: 5px;
     border-radius: 40px;

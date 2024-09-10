@@ -1,48 +1,60 @@
 .sidebar-lateral {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 70px;
-    height: 100vh;
-    background-color: #cc0001;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 0;
-    border: 2px solid #000;
-  }
-  
-  .icon-button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    margin: 10px 0;
-  }
-  
-  .icon-button:hover {
-    color: #aaaaaa;
-  }
-  
-  .top-buttons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex-grow: 1;
-  }
-  
-  .bottom-buttons {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-  
-  .divider {
-    height: 6px;
-    width: 60%;
-    background: white;
-    margin: 10px 0;
-    margin-left: 15px;
-  }
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 70px; /* Puedes ajustar este tamaño */
+  height: 100vh;
+  background-color: #dc143c;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-right: 1px solid #000; /* Cambié de border a border-right */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); /* Añadido para un efecto de sombra */
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px; /* Tamaño de icono más pequeño */
+  cursor: pointer;
+  margin: 10px 0;
+  transition: color 0.3s; /* Transición suave para el hover */
+}
+
+.icon-button:hover {
+  color: #aaaaaa; /* Color en hover */
+}
+
+.top-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.bottom-buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.divider {
+  height: 2px; /* Reducido para un aspecto más elegante */
+  width: 60%;
+  background: white;
+  margin: 10px 0;
+  margin-left: 15px;
+}
+
+/* Estilo para iconos */
+.icon {
+  font-size: 24px; /* Iconos de tamaño apropiado */
+}
+
+/* Añadir un poco de espaciado */
+.icon-button + .icon-button {
+  margin-top: 5px; /* Menor margen entre iconos */
+}

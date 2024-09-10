@@ -1,20 +1,24 @@
 import React from 'react';
 import './Sidebar.css'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-// SIDEBAR es El componente que hará de cuadro para filtrar en el mapa general
 const Sidebar = () => {
   return (
-    <div className="sidebar">
-      <button>Filtrar</button>
-      <button>Vista Avanzada</button>
-      
-      {/* Filtro de contenedores */}
-      <div className="search-bar">
-        <h6>Ingrese ID:</h6>
-        <input type="text" placeholder="Ej: HLXU-123456-7" />
-        <button>Buscar</button>
+    <nav className="navbar navbar-expand-lg navbar-light sidebar-custom flex-column">
+      <div className="container-fluid">
+        <button className='btn btn-outline-light mb-2 d-none d-lg-block'>Filtrar</button>
+        <button className='btn btn-outline-light mb-2'>Vista Avanzada</button>
+        
+        {/* Filtro de contenedores */}
+        <div className="search-bar mb-2">
+          <h6>ID:</h6>
+          <div className="input-group">
+            <input type="text" className="form-control" placeholder="Ej: HLXU-123456-7" />
+            <button className="btn btn-dark">Buscar</button>
+          </div>
+        </div>
       </div>
-    </div>
+    </nav>
   );
 };
 

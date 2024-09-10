@@ -2,29 +2,52 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'; 
 import { gsap } from 'gsap';
 import floorTexturePath from '../assets/textura-pared-grunge.jpg';
+import sceneTexturePath from '../assets/scene.jpg';
+
 
 const ThreeDMap = () => {
   const mountRef = useRef(null);
 
   useEffect(() => {
-   
+    const currentMount = mountRef.current;
     
     // Configuración básica de Three.js
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight); // Usar el tamaño del contenedor
+    mountRef.current.appendChild(renderer.domElement);
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = 256;
+    canvas.height = 256;
+
+    // Crear un degradado
+    const gradient = context.createLinearGradient(0, 0, 0, 256);
+    gradient.addColorStop(0, '#3b5998'); // Color de inicio
+    gradient.addColorStop(1, '#8b9dc3'); // Color de fin
+
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 256, 256);
+
+    // Crear una textura a partir del canvas
+    const gradientTexture = new THREE.Texture(canvas);
+    gradientTexture.needsUpdate = true; // Indica que la textura necesita ser actualizada
+
+    scene.background = gradientTexture; // Asigna la textura como fondo
+
 
     camera.position.set(20, 10, 15);  // Cambia las coordenadas para ubicar la cámara
     camera.lookAt(20, 5, 5);  // Apunta la cámara a la coordenada (opcional)
 
     // Establecer el color de fondo a gris claro
-    renderer.setClearColor(0xd3d3d3); // Color gris claro en hexadecimal
+    //renderer.setClearColor(0xd3d3d3); // Color gris claro en hexadecimal
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    
-    mountRef.current.appendChild(renderer.domElement);
+   
     const textureLoader = new THREE.TextureLoader();
 
     // Cargar la textura desde la carpeta pública o la ruta relativa a tu proyecto
@@ -48,6 +71,7 @@ const ThreeDMap = () => {
     floor.position.y = 0;
     scene.add(floor);
 
+  
 
     // Añadir luz direccional (simula el sol)
     const sunLight = new THREE.DirectionalLight(0xffffff, 1); // Luz blanca con intensidad 1
@@ -293,9 +317,6 @@ const ThreeDMap = () => {
     pointLight.position.set(10, 10, 10);
     scene.add(pointLight);
 
-
-
-
     // Añadir los controles de órbita
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;  // Suaviza los movimientos
@@ -303,6 +324,13 @@ const ThreeDMap = () => {
     controls.target.set(21, 5, 2);  // Mantén el foco en el origen (o cualquier punto)
 
 
+    window.addEventListener('resize', () => {
+        const width = mountRef.current.clientWidth;
+        const height = mountRef.current.clientHeight;
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+    });
 
     function animate() {
         requestAnimationFrame(animate);
@@ -318,11 +346,16 @@ const ThreeDMap = () => {
 
     // Cleanup para que no se caiga al cambiar de página
     return () => {
-      mountRef.current.removeChild(renderer.domElement);
+        if (currentMount) {
+            // Aquí detienes animaciones y limpias la escena
+            currentMount.removeChild(renderer.domElement); // Asegúrate de que el ref exista
+          }      
     };
   }, []);
 
-  return <div ref={mountRef} style={{ width: '100vw', height: '100vh' }} />;
+  return <div style={{ width: 'calc(100vw - <navbar-width>)', height: '100vh', overflow: 'hidden' }}>
+        <div ref={mountRef} style={{ width: '100%', height: '100%' }} />
+        </div>;
 };
 
 export default ThreeDMap;
