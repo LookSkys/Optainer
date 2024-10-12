@@ -4,9 +4,9 @@ import Sidebar from '../components/SideBar/SideBar'
 
 const Home = () => {
   return (
-    <section className=''>
+    <section>
         <Sidebar className= "d-none d-lg-block"/> 
-        <div className=''>
+        <div>
             <ThreeMap />
         </div>
     </section>

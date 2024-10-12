@@ -8,7 +8,7 @@ function Navbar() {
       <div className="container-fluid">
         {/* Logo de aexsa*/}
         <a className="navbar-brand" href="#">
-          <img src={logo} alt="Logo" style={{ height: '40px' }} />
+          <img src={logo} alt="Logo" style={{ height: '40px', width: '150px' }} />
         </a>
 
         {/* Botón de tipo hamburguesa para pantallas mas pequeñas */}
