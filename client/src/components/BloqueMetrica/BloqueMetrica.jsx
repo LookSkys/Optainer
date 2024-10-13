@@ -17,7 +17,7 @@ export function BloqueMetrica ({imagen,nombreMetrica,cantidadMetrica,descripcion
     return(
         <>
         <div className='contenedor-metrica'>
-        <div className="card border-dark card-custom" style={{ width: '19rem' }}>
+        <div className="card border-dark card-custom">
             <div className="card-body">
                 <img
                 src={recImagen}

@@ -29,17 +29,12 @@ function Navbar() {
           <ul className="navbar-nav">
             <li className="nav-item">
             <Link className="nav-link" to="/">
-                Mapa
+                Inicio
               </Link>
             </li>
             <li className="nav-item">
-            <Link className="nav-link" to="/inventario">
-                Inventario
-              </Link>
-            </li>
-            <li className="nav-item">
-            <Link className="nav-link" to="/movimientos">
-                Movimientos
+            <Link className="nav-link" to="/avanzado">
+                Avanzado
               </Link>
             </li>
             <li className="nav-item">

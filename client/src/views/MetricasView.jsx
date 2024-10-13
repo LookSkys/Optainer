@@ -4,7 +4,8 @@ import { BloqueTareas } from '../components/BloqueTareas/BloqueTareas'
 
 function MetricasView() {
   return (
-    <div className='container mt-4'>
+    // margen a la izq para que no choque el sidebarlateral
+    <div style={{marginLeft: '90px'}} >
       <h2>METRICAS</h2>
       <br />
       <div className='row g-0'>

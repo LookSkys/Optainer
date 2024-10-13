@@ -1,0 +1,31 @@
+.barra-torres {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.torre-n {
+    background-color: #cc0000;
+    border-radius: 40px;
+    width: 1500px;
+    text-align: center;
+}
+
+.torre-texto {
+    font-size: 40px;
+    color: white;
+}
+
+.boton-flecha {
+    background-color: white;
+    color: black;
+    font-size: 20px;
+    border: 0;
+}
+
+.boton-flecha:hover {
+    color: gray;
+    border: 0;
+}
+
