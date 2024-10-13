@@ -112,6 +112,24 @@ function MapaAvanzadoView () {
                 <ContenedorAvanzado />
             </div>
         </div>
+        {/* Fila 1 */}
+        <div className="row">
+            <div className="col">
+                <h2 style={{ marginLeft: '150px' }}>1</h2>
+            </div>
+            <div className="col">
+                <h2 style={{ marginLeft: '135px' }}>2</h2>
+            </div>
+            <div className="col">
+                <h2 style={{ marginLeft: '105px' }}>3</h2>
+            </div>
+            <div className="col">
+                <h2 style={{ marginLeft: '75px' }}>4</h2>
+            </div>
+            <div className="col">
+                <h2 style={{ marginLeft: '50px' }}>5</h2>
+            </div>
+        </div>
         </div>
       )
 }
