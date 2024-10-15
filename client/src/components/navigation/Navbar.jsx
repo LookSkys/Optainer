@@ -8,7 +8,7 @@ function Navbar() {
       <div className="container-fluid">
         {/* Logo de aexsa*/}
         <a className="navbar-brand" href="#">
-          <img src={logo} alt="Logo" style={{ height: '40px' }} />
+          <img src={logo} alt="Logo" style={{ height: '40px', width: '150px' }} />
         </a>
 
         {/* Botón de tipo hamburguesa para pantallas mas pequeñas */}
@@ -29,17 +29,12 @@ function Navbar() {
           <ul className="navbar-nav">
             <li className="nav-item">
             <Link className="nav-link" to="/">
-                Mapa
+                Inicio
               </Link>
             </li>
             <li className="nav-item">
-            <Link className="nav-link" to="/inventario">
-                Inventario
-              </Link>
-            </li>
-            <li className="nav-item">
-            <Link className="nav-link" to="/movimientos">
-                Movimientos
+            <Link className="nav-link" to="/avanzado">
+                Avanzado
               </Link>
             </li>
             <li className="nav-item">

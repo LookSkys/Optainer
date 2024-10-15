@@ -6,11 +6,11 @@ const Sidebar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light sidebar-custom space-between nav-justified">
       <div className="container-fluid d-flex justify-content-center align-items-center">
-        <button className='btn btn-outline-light mb-1 d-none d-lg-block'
+        {/* <button className='btn btn-outline-light mb-1 d-none d-lg-block'
           style={{ whiteSpace: 'nowrap', padding: '5px 10px', fontSize: '14px' }}
         >
           Filtrar
-        </button>
+        </button> */}
         <button 
           className='btn btn-outline-light mb-1' 
           style={{ whiteSpace: 'nowrap', padding: '5px 10px', fontSize: '14px' }}
