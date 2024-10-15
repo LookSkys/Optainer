@@ -96,12 +96,21 @@ const ThreeDMap = () => {
     const height = 1; // Altura del prisma
     const depth = 4; // Profundidad del prisma
 
+    // Dimensiones del prisma rectangular refee
+    const widthRefee = 4; // Ancho del prisma
+    const heightRefee = 1; // Altura del prisma
+    const depthRefee = 1; // Profundidad del prisma
+
     // Crear la geometría del prisma rectangular
     const geometry = new THREE.BoxGeometry(width, height, depth);
+    const geometryRefee = new THREE.BoxGeometry(widthRefee, heightRefee, depthRefee);
 
     // Crear la geometría del borde
     const edgesGeometry = new THREE.EdgesGeometry(geometry);
     const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x888888, linewidth: 1 }); // Gris suave
+
+    const edgesGeometryRefee = new THREE.EdgesGeometry(geometryRefee);
+    const edgesMaterialRefee = new THREE.LineBasicMaterial({ color: 0x888888, linewidth: 1 }); // Gris suave
 
     // Crear un bloque de contenedores (espacios vacíos)
     function createBlock(blockX, blockY, blockZ) {
@@ -138,6 +147,41 @@ const ThreeDMap = () => {
         return blockGroup;
     }
 
+    function createBlockRefee(blockX, blockY, blockZ) {
+        const blockGroup = new THREE.Group();
+        blockGroup.position.set(blockX, blockY, blockZ);
+        scene.add(blockGroup);
+
+        for (let col = 1; col < 2; col++) { // Columnas (de izquierda a derecha)
+            for (let row = 1; row < 15; row++) { // Filas (de adelante hacia atrás)
+                for (let heightLevel = 1; heightLevel < 6; heightLevel++) { // Alturas (solo espacios vacíos)
+                    // Crear un espacio vacío
+                    const space = new THREE.Mesh(
+                        geometryRefee,
+                        new THREE.MeshBasicMaterial({ color: 0xeeeeee, transparent: true, opacity: 0 }) // Material transparente
+                    );
+                    
+                    // Calcular posición
+                    const x = col * (widthRefee); // Posición en columna
+                    const y = heightLevel * (heightRefee); // Posición en altura
+                    const z = -row * (depthRefee) ; // Posición en fila
+
+                    // Establecer posición
+                    space.position.set(x, y, z);
+                    blockGroup.add(space);
+
+                    // Crear y añadir borde
+                    const border = new THREE.LineSegments(edgesGeometryRefee, edgesMaterialRefee);
+                    border.position.copy(space.position);
+                    blockGroup.add(border);
+                }
+            }
+        }
+
+        return blockGroup;
+    }
+
+
     // Crear y añadir el bloque al escenario
     const blockGroup = [
         createBlock(0, 0, 0),
@@ -145,7 +189,10 @@ const ThreeDMap = () => {
         createBlock(20, 0, 0),
         createBlock(30, 0, 0),
         createBlock(40, 0, 0),
-        createBlock(50, 0, 0)
+        createBlock(50, 0, 0),
+        
+        createBlockRefee(-20, 0, 0),
+        createBlockRefee(-26, 0, 0),
     ];
 
     // Array de colores (uno por cada altura)
@@ -153,45 +200,45 @@ const ThreeDMap = () => {
         0xffffff,  // blanco para la altura 1 
         0x00ff00,  // Verde para la altura 2
         0xffff00,  // Amarillo para la altura 3
-        0xff0000,  // Amarillo para la altura 4 
-        0x18171c   // Fucsia para la altura 5
+        0xff0000,  // Rojo para la altura 4 
+        0x18171c   // Negro para la altura 5
     ];
 
 
     // Función para actualizar los colores de los contenedores en cada fila-columna según su altura
     function updateColorsInColumn(block) {
         console.log("Actualizando colores de columnas y filas...");
-
         // Iterar sobre todas las filas y columnas
         for (let column in columnHeights) {
             for (let row in columnHeights[column]) {
                 const maxHeight = columnHeights[column][row]; // Obtener la altura máxima de la fila-columna
-
+                console.log('Lectura de altura Maxima, para el color: ' + maxHeight + ' y con column: ' + column);
+                const columnBlock = column % 10;
                 // Definir el color basado en la altura máxima
                 const color = colors[maxHeight - 1] || 0xeeeeee; // Por defecto a gris si no hay altura
                 // Iterar sobre cada altura posible
                 for (let heightLevel = 1; heightLevel <= maxHeight; heightLevel++) {
                     // Buscar el contenedor en la posición actual de fila-columna y altura
                     
+                    
                     const container = block.children.find(child => {
                         return child instanceof THREE.Mesh &&
-                            Math.abs(child.position.x - column) < 0.001 &&
-                            Math.abs(child.position.y - heightLevel) < 0.001 &&
-                            Math.abs(child.position.z - row) < 0.001; // Ajusta aquí según sea necesario
+                            Math.abs(child.position.x - columnBlock) < 0.1 &&
+                            Math.abs(child.position.y - heightLevel) < 0.1 &&
+                            Math.abs(child.position.z - row) < 0.1; // Ajusta aquí según sea necesario
                     });
 
-                    console.log(`Buscando contenedor en: Columna: ${column}, Fila: ${row}, Altura: ${heightLevel}`);
-                    console.log(container.position);
+                    console.log(`Buscando contenedor en: Columna: ${columnBlock}, Fila: ${row}, Altura: ${heightLevel}`);
+                    console.log('lectura de posicion de container: ' + container);
 
                     // Si se encuentra el contenedor, cambiar su color
                     if (container) {
                         console.log(`Aplicando color: ${color.toString(16)} a la altura ${heightLevel}`);
                         container.material.color.set(color);
                         container.material.needsUpdate = true; // Asegúrate de que el material esté marcado como modificado
-                        
                         block.add(container);
                     } else {
-                        console.error(`No se encontró el contenedor para la columna: ${column}, fila: ${row}, altura: ${heightLevel}`);
+                        console.error(`No se encontró el contenedor para la columna: ${columnBlock}, fila: ${row}, altura: ${heightLevel}`);
                     }
                 }
             }
@@ -208,13 +255,17 @@ const ThreeDMap = () => {
         // Convertir a índices de fila y columna
         const column = Math.floor(x);
         const row = Math.floor(-z*4);
-
+        const blockId = block.position.x;
+        const idContainer = column + blockId;
+        
+        console.log('lectura de columnHeights:' + columnHeights);
+        console.log('lectura de idContainer:' + idContainer);
         // Inicializar la altura si no existe
-        if (!columnHeights[column]) {
-            columnHeights[column] = {};
+        if (!columnHeights[idContainer]) {
+            columnHeights[idContainer] = {};
         }
-        if (!columnHeights[column][row]) {
-            columnHeights[column][row] = 0;
+        if (!columnHeights[idContainer][row]) {
+            columnHeights[idContainer][row] = 0;
         }
 
         // Buscar el espacio en la posición dada
@@ -235,8 +286,7 @@ const ThreeDMap = () => {
                 block.add(container);
                 
                 // Incrementar la altura de la columna
-                columnHeights[column][row] += 1;
-                
+                columnHeights[idContainer][row] += 1;
 
             } else {
                 console.log('Removing container at:', space.position);
@@ -247,13 +297,13 @@ const ThreeDMap = () => {
                     block.remove(existingContainer);
                     
                     // Decrementar la altura de la columna
-                    columnHeights[column][row] -= 1;
+                    columnHeights[idContainer][row] -= 1;
                 }
             }
 
             // Obtener la nueva altura para la fila-columna actual
-            const maxHeight = columnHeights[column][row];
-            console.log(`Max height in column (${column}, ${row}): ${maxHeight}`);
+            //const maxHeight = columnHeights[block][column][row];
+            //console.log(`Max height in column (${column}, ${row}): ${maxHeight}`);
             
             
         } else {
@@ -284,6 +334,7 @@ const ThreeDMap = () => {
         updateContainer(blockGroup[0], { x: 2, y: 1, z: 2}, true); // Añadir contenedor
         updateContainer(blockGroup[0], { x: 2, y: 2, z: 2}, true); // Añadir contenedor
 
+
         updateColorsInColumn(blockGroup[0]);
     }, 100);
 
@@ -295,9 +346,66 @@ const ThreeDMap = () => {
     }, 1000);
 
     setTimeout(() => {
-        //updateContainer(blockGroup[0], { x: 3, y: 3, z: 2}, false); // Añadir contenedor
+        updateContainer(blockGroup[0], { x: 4, y: 1, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[0], { x: 3, y: 2, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[0], { x: 4, y: 1, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[0], { x: 4, y: 2, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[0], { x: 4, y: 3, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[0], { x: 5, y: 1, z: 1}, true); // Añadir contenedor
+
+        updateColorsInColumn(blockGroup[0]); 
+
+        updateContainer(blockGroup[1], { x: 1, y: 1, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[1], { x: 1, y: 2, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[1], { x: 1, y: 3, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[1], { x: 1, y: 4, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[1], { x: 1, y: 1, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[1], { x: 1, y: 2, z: 1}, true); // Añadir contenedor
         
-    }, 3000);
+        updateColorsInColumn(blockGroup[1]);
+
+        updateContainer(blockGroup[2], { x: 1, y: 1, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[2], { x: 1, y: 2, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[2], { x: 1, y: 3, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[2], { x: 1, y: 4, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[2], { x: 2, y: 1, z: 1}, true); // Añadir contenedor
+        
+        updateColorsInColumn(blockGroup[2]);
+
+        updateContainer(blockGroup[3], { x: 1, y: 1, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[3], { x: 1, y: 2, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[3], { x: 1, y: 3, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[3], { x: 1, y: 4, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[3], { x: 1, y: 1, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[3], { x: 1, y: 2, z: 2}, true); // Añadir contenedor
+
+        updateColorsInColumn(blockGroup[3]);
+
+        
+        
+    }, 2000);
+
+    setTimeout(() => {
+        updateContainer(blockGroup[4], { x: 1, y: 1, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 1, y: 2, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 1, y: 3, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 1, y: 4, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 2, y: 1, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 1, y: 5, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 2, y: 2, z: 1}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 2, y: 3, z: 1}, true); // Añadir contenedor
+
+        updateContainer(blockGroup[4], { x: 1, y: 1, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 1, y: 2, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 1, y: 3, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 1, y: 4, z: 2}, true); // Añadir contenedor
+
+        updateContainer(blockGroup[4], { x: 2, y: 1, z: 2}, true); // Añadir contenedor
+        updateContainer(blockGroup[4], { x: 2, y: 2, z: 2}, true); // Añadir contenedor
+
+
+        updateColorsInColumn(blockGroup[4]);
+    }, 100);
 
 
 
