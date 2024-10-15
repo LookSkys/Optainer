@@ -1,12 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const cors = require('cors');
 const app = express();
 const contenedorRoutes = require('./routes/contenedorRoutes');
 const port = process.env.PORT || 5000;
 
 // Middleware para analizar JSON
 app.use(express.json());
+
+app.use(cors());
 
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
