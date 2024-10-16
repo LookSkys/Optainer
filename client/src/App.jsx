@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import LoginView from './views/LoginView'; // Importa la vista de Login
+import LoginView from './views/LoginView';
 import Home from './views/Home';
 import MapaAvanzadoView  from './views/MapaAvanzadoView'
 import MetricasView from './views/MetricasView'

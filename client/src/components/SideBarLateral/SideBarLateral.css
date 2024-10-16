@@ -1,17 +1,50 @@
+/* SideBarLateral.css */
+
 .sidebar-lateral {
   position: fixed;
-  left: 0;
-  top: 0;
-  width: 70px; /* Puedes ajustar este tamaño */
-  height: 100vh;
-  background-color: #cc0000;
+  left: 20px; /* Separado del borde izquierdo */
+  top: 20px; /* Separado del borde superior */
+  width: 50px; /* Ancho mínimo cuando está colapsada, ajustado para mayor espacio */
+  height: auto; /* Altura automática */
+  background-color: #cc0000; /* Fondo rojo para la barra lateral */
+  transition: width 0.3s ease; /* Transiciones suaves */
+  overflow: hidden; /* Evitar el desbordamiento */
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start; /* Asegura que los iconos empiecen desde arriba */
   align-items: center;
-  padding: 20px 0;
-  border-right: 1px solid #000; /* Cambié de border a border-right */
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); /* Añadido para un efecto de sombra */
+  border-radius: 5px; /* Borde redondeado para una mejor apariencia */
+}
+
+.sidebar-lateral.is-active {
+  width: 70px; /* Ancho cuando está expandida */
+}
+
+.hamburger-button {
+  color: white;
+  font-size: 24px; /* Tamaño del icono */
+  cursor: pointer;
+  transition: color 0.3s; /* Transición suave para el hover */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px; /* Aumentar la altura del botón para mejor accesibilidad */
+  width: 100%; /* Ocupa todo el ancho de la barra lateral */
+}
+
+.hamburger-button:hover {
+  color: #1e1d1d;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0; /* Espaciado superior e inferior */
+}
+
+.top-buttons, .bottom-buttons {
+  display: flex;
+  flex-direction: column;
 }
 
 .icon-button {
@@ -21,40 +54,35 @@
   font-size: 20px; /* Tamaño de icono más pequeño */
   cursor: pointer;
   margin: 10px 0;
-  transition: color 0.3s; /* Transición suave para el hover */
 }
 
 .icon-button:hover {
-  color: #aaaaaa; /* Color en hover */
+  color: #1e1d1d;
+  background-color: rgba(255, 255, 255, 0.2); /* Color de fondo suave al pasar el mouse */
 }
 
-.top-buttons {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex-grow: 1;
-}
-
-.bottom-buttons {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
+/* Estilo para la división */
 .divider {
-  height: 2px; /* Reducido para un aspecto más elegante */
+  height: 2px;
   width: 60%;
   background: white;
   margin: 10px 0;
   margin-left: 15px;
 }
 
-/* Estilo para iconos */
-.icon {
-  font-size: 24px; /* Iconos de tamaño apropiado */
-}
-
 /* Añadir un poco de espaciado */
 .icon-button + .icon-button {
   margin-top: 5px; /* Menor margen entre iconos */
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 768px) {
+  .sidebar-lateral {
+    width: 50px; /* Ancho mínimo cuando está colapsada en móviles */
+    height: auto; /* Mantener altura automática */
+  }
+
+  .sidebar-lateral.is-active {
+    width: 70px; /* Ancho de la barra lateral expandida en móviles */
+  }
 }
