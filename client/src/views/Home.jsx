@@ -1,16 +1,17 @@
-import React from 'react'
 import ThreeMap from '../components/ThreeMap'
-import Sidebar from '../components/SideBar/SideBar'
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 const Home = () => {
   return (
-    <section>
-        <Sidebar className= "d-none d-lg-block"/> 
-        <div>
-            <ThreeMap />
+    <div className="home-container">
+      <section className="map-container">
+        <div id="three-map">
+          <ThreeMap />
         </div>
-    </section>
-  )
-}
+      </section>
+    </div>
+  );
+};
 
-export default Home
+export default Home;
+

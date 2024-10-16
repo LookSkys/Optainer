@@ -1,33 +1,33 @@
-import './App.css'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import Navbar from './components/navigation/Navbar'
-import Home from './views/Home'
-// import InventarioView from './views/InventarioView'
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import LoginView from './views/LoginView';
+import Home from './views/Home';
 import MapaAvanzadoView  from './views/MapaAvanzadoView'
 import MetricasView from './views/MetricasView'
 import SideBarLateral from './components/SideBarLateral/SideBarLateral'
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import './App.css';
 
 function App() {
-
   return (
-    <main>
-      <Router>
-        <div className= "d-none d-lg-block"><Navbar/></div>
-        <div className='d-md-block d-lg-none'><SideBarLateral/></div>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          {/* <Route path='/inventario' element={<InventarioView/>} /> no usado por ahora */}
-          <Route path='/avanzado' element={<MapaAvanzadoView/>} />
-          <Route path='/metricas' element={<MetricasView/>} />
-        </Routes>
-      </Router>
-    </main>
-
-
-  
-  )
+    <Router>
+      <NavbarController />
+      <Routes>
+        <Route path="/" element={<LoginView />} />
+        <Route path="/home" element={<Home />} />
+        <Route path='/avanzado' element={<MapaAvanzadoView/>} />
+        <Route path='/metricas' element={<MetricasView/>} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+const NavbarController = () => {
+  const location = useLocation();
+
+  return (
+    <>
+      {location.pathname !== '/' && <SideBarLateral/>}
+    </>
+  );
+};
+
+export default App;
