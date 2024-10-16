@@ -1,6 +1,5 @@
-import React from 'react';
-import { FaGlobeAmericas, FaListAlt, FaSignOutAlt, FaBars, FaBell  } from 'react-icons/fa'; // Importa los íconos
-import './SideBarLateral.css'; // Estilos separados
+import { FaGlobeAmericas, FaListAlt, FaSignOutAlt, FaBars, FaBell  } from 'react-icons/fa'; 
+import './SideBarLateral.css'; 
 
 function SideBarLateral() {
   return (
@@ -13,7 +12,7 @@ function SideBarLateral() {
       <div className="bottom-buttons">
         <button className="icon-button"><FaBars /></button>
         <div className='divider'></div>
-        <button className="icon-button"><FaSignOutAlt /></button>
+        <button className="icon-button" ><FaSignOutAlt /></button>
       </div>
     </div>
   );
