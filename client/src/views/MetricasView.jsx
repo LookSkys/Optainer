@@ -1,4 +1,3 @@
-import React from 'react'
 import { BloqueMetrica } from '../components/BloqueMetrica/BloqueMetrica'
 import { BloqueTareas } from '../components/BloqueTareas/BloqueTareas'
 
@@ -6,7 +5,7 @@ function MetricasView() {
   return (
     // margen a la izq para que no choque el sidebarlateral
     <div style={{marginLeft: '90px'}} >
-      <h2>METRICAS</h2>
+      <h2 style={{ color: 'dark', fontSize: '2rem', marginBottom: '20px', textAlign: 'left', paddingTop: '30px', paddingLeft: '10px'}}>METRICAS</h2>
       <br />
       <div className='row g-0'>
         <div className='col'>

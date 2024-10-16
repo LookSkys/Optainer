@@ -1,20 +1,112 @@
-import React from 'react';
-import { FaGlobeAmericas, FaListAlt, FaSignOutAlt, FaBars, FaBell  } from 'react-icons/fa'; // Importa los íconos
-import './SideBarLateral.css'; // Estilos separados
+import { useState } from 'react';
+import { FaSignOutAlt, FaBars } from 'react-icons/fa';
+import { FaHouse, FaBox, FaWrench, FaClipboardCheck, FaFileInvoiceDollar } from 'react-icons/fa6';
+import { useNavigate } from 'react-router-dom';
+import './SideBarLateral.css';
 
 function SideBarLateral() {
+  const [isActive, setIsActive] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState(null); // Estado para el hover
+  const navigate = useNavigate();
+
+  const handleToggle = () => {
+    setIsActive(!isActive);
+  };
+
+  const handleMouseEnter = (label) => {
+    setHoveredButton(label);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredButton(null);
+  };
+
   return (
-    <div className="sidebar-lateral">
-      <div className="top-buttons">
-        <button className="icon-button"><FaGlobeAmericas /></button>
-        <button className="icon-button"><FaListAlt /></button>
-        <button className="icon-button"><FaBell /></button>
+    <div className={`sidebar-lateral ${isActive ? 'is-active' : ''}`}>
+      <div className="hamburger-button" onClick={handleToggle}>
+        <FaBars />
       </div>
-      <div className="bottom-buttons">
-        <button className="icon-button"><FaBars /></button>
-        <div className='divider'></div>
-        <button className="icon-button"><FaSignOutAlt /></button>
-      </div>
+
+      {isActive && (
+        <aside className="menu">
+          <div className="top-buttons">
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/home')}
+                onMouseEnter={() => handleMouseEnter('Home')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaHouse />
+              </button>
+              {hoveredButton === 'Home' && <div className="label">Home</div>}
+            </div>
+
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/metricas')}
+                onMouseEnter={() => handleMouseEnter('Métricas')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaFileInvoiceDollar />
+              </button>
+              {hoveredButton === 'Métricas' && <div className="label">Métricas</div>}
+            </div>
+
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/avanzado')}
+                onMouseEnter={() => handleMouseEnter('Avanzado')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaBox />
+              </button>
+              {hoveredButton === 'Avanzado' && <div className="label">Avanzado</div>}
+            </div>
+
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/')}
+                onMouseEnter={() => handleMouseEnter('Checklist')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaClipboardCheck />
+              </button>
+              {hoveredButton === 'Checklist' && <div className="label">Checklist</div>}
+            </div>
+
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/')}
+                onMouseEnter={() => handleMouseEnter('Herramientas')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaWrench />
+              </button>
+              {hoveredButton === 'Herramientas' && <div className="label">Herramientas</div>}
+            </div>
+          </div>
+
+          <div className="bottom-buttons">
+            <div className="divider"></div>
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/')}
+                onMouseEnter={() => handleMouseEnter('Salir')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaSignOutAlt />
+              </button>
+              {hoveredButton === 'Salir' && <div className="label">Salir</div>}
+            </div>
+          </div>
+        </aside>
+      )}
     </div>
   );
 }

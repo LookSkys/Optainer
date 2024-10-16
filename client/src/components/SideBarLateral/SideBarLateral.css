@@ -1,60 +1,107 @@
+/* SideBarLateral.css */
+
 .sidebar-lateral {
   position: fixed;
-  left: 0;
-  top: 0;
-  width: 70px; /* Puedes ajustar este tamaño */
-  height: 100vh;
+  left: 20px;
+  top: 20px;
+  width: 50px;
+  height: auto;
   background-color: #cc0000;
+  transition: width 0.3s ease;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  padding: 20px 0;
-  border-right: 1px solid #000; /* Cambié de border a border-right */
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); /* Añadido para un efecto de sombra */
+  border-radius: 5px;
+}
+
+.sidebar-lateral.is-active {
+  width: 70px;
+}
+
+.hamburger-button {
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 100%;
+}
+
+.hamburger-button:hover {
+  color: #1e1d1d;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+.top-buttons, .bottom-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.icon-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .icon-button {
   background: none;
   border: none;
   color: white;
-  font-size: 20px; /* Tamaño de icono más pequeño */
+  font-size: 20px;
   cursor: pointer;
   margin: 10px 0;
-  transition: color 0.3s; /* Transición suave para el hover */
 }
 
 .icon-button:hover {
-  color: #aaaaaa; /* Color en hover */
+  color: #1e1d1d;
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-.top-buttons {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  flex-grow: 1;
+/* Estilos para el label (nube de diálogo) */
+.label {
+  position: absolute;
+  left: 70px; /* A la derecha del botón */
+  top: 50%;
+  transform: translateY(-50%); /* Centrado verticalmente */
+  background-color: rgba(30, 29, 29, 0.9);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 999;
 }
 
-.bottom-buttons {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+.label::before {
+  content: '';
+  position: absolute;
+  left: -8px; /* El triángulo en la izquierda, apuntando al botón */
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent rgba(30, 29, 29, 0.9) transparent transparent;
 }
 
 .divider {
-  height: 2px; /* Reducido para un aspecto más elegante */
+  height: 2px;
   width: 60%;
   background: white;
   margin: 10px 0;
   margin-left: 15px;
 }
 
-/* Estilo para iconos */
-.icon {
-  font-size: 24px; /* Iconos de tamaño apropiado */
-}
-
-/* Añadir un poco de espaciado */
 .icon-button + .icon-button {
-  margin-top: 5px; /* Menor margen entre iconos */
+  margin-top: 5px;
 }

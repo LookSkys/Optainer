@@ -54,7 +54,7 @@ npm install
 #### Iniciar el servidor:
 
 ```bash
-npm run dev
+node index.js
 ```
 El servidor se ejecutará en http://localhost:5000.
 
