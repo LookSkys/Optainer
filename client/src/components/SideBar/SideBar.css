@@ -1,0 +1,33 @@
+/* Estilo general del sidebar */
+.sidebar-custom {
+  padding: 20px; /* Espaciado interno */
+  background-color: #cc0000; /* Ejemplo de color de fondo */
+  color: #ffffff; /* Color del texto */
+}
+
+/* Centra los elementos y ajusta su distribución */
+.container-fluid {
+  width: 100%; /* Ocupa todo el ancho del navbar */
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+}
+
+/* Estilo para los botones */
+.btn-outline-light {
+  margin-right: 10px; /* Margen entre los botones */
+}
+
+/* Estilo del input y botón de búsqueda */
+.input-group {
+  width: 300px; /* Controla el ancho del input */
+  display: flex;
+}
+
+.input-group .form-control {
+  flex-grow: 1;
+}
+
+.input-group .btn {
+  margin-left: 10px; /* Espaciado entre input y botón */
+}

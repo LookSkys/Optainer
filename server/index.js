@@ -1,19 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
+const cors = require('cors');
 const app = express();
-const PORT = process.env.PORT || 5000;
+const contenedorRoutes = require('./routes/contenedorRoutes');
+const port = process.env.PORT || 5000;
 
 // Middleware para analizar JSON
 app.use(express.json());
 
-// Conectar a MongoDB
-mongoose.connect('your_mongodb_connection_string', { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => console.log('MongoDB conectado'))
-.catch(err => console.log(err));
+app.use(cors());
 
-// Ruta básica
-app.get('/', (req, res) => {
-res.send('Servidor corriendo');
+app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+
+app.use('/api', contenedorRoutes);
+
+// Cualquier ruta que no sea un archivo estático debe devolver el index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
+  });
+
+app.listen(port, () => {
+  console.log(`Servidor corriendo en el puerto ${port}`);
 });
-
-app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));

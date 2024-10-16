@@ -1,0 +1,21 @@
+.contenedor-metrica {
+    height: 250px;
+    margin-top: 10px;
+    margin-left: 10px;
+    padding-left: 0;
+    width: 300px;
+}
+
+.card-custom {
+    height: 250px;
+}
+
+img {
+    height: 60px;
+    width: 60px;
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}

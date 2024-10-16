@@ -1,0 +1,14 @@
+.contenedor-tareas {
+    width: 770px; 
+    margin: 0 auto; 
+    padding: 20px; 
+    background-color: white; 
+    border: 1px solid black; 
+    border-radius: 8px; 
+    margin-top: 10px;
+    margin-left: 0;
+}
+
+.lista-tareas {
+    margin-top: 20px;
+}

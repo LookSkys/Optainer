@@ -1,0 +1,138 @@
+/* General: Eliminar padding extra en body y asegurarse de que ocupe todo el espacio */
+body {
+  margin: 0;
+  font-family: 'Exo 2', sans-serif;
+}
+
+/* Asegúrate de que el contenedor ocupe toda la pantalla */
+.login-container {
+  display: flex;
+  width: 100vw; /* Ocupa todo el ancho de la pantalla */
+  height: 100vh; /* Ocupa todo el alto de la pantalla */
+  background-image: url('../../assets/fondo_login.png'); /* Mover el fondo aquí */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Ajustes para mover el contenido más a la izquierda */
+.left-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 50px; /* Mueve "Optainer" más hacia la izquierda */
+}
+
+.left-section h1 {
+  font-family: 'Iceland', sans-serif;
+  font-size: 10rem; /* Aumenta el tamaño del texto "Optainer" */
+  color: white;
+  margin: 0;
+}
+
+/* Asegura que la sección derecha esté centrada y separe los elementos */
+.right-section {
+  flex: 1; /* Asigna espacio a la sección derecha */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Caja del login */
+.login-box {
+  background-color: rgba(217, 217, 217, 0.35);
+  padding: 20px;
+  border-radius: 15px;
+  border: 2px solid rgba(128, 128, 128, 0.5);
+  width: 350px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.login-box p {
+  margin-bottom: 30px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.login-box label {
+  display: block;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: rgba(217, 217, 217, 0.35);
+  color: #d9d9d9;
+  border: 1px solid white;
+  border-radius: 5px;
+}
+
+.login-box button {
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  width: 90%;
+}
+
+.login-box button:hover {
+  background-color: red;
+}
+
+.forgot-password {
+  width: 100%;
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.forgot-password a {
+  text-decoration: none;
+  color: white;
+}
+
+.forgot-password a:hover {
+  color: red;
+}
+
+/* Estilo del botón */
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+h1, p, label {
+  color: white;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 1024px) { /* Tablet */
+  .left-section {
+    padding-left: 20px; /* Menos padding para tabletas */
+  }
+
+  .left-section h1 {
+    font-size: 3.5rem; /* Tamaño más pequeño para tabletas */
+  }
+
+  .login-box {
+    width: 80%; /* La caja de login ocupa más ancho */
+    max-width: 400px; /* Limitar el ancho máximo */
+  }
+}

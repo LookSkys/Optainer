@@ -28,8 +28,10 @@
   },
   "homepage": "https://github.com/LookSkys/Optainer#readme",
   "dependencies": {
-    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
     "mongoose": "^8.6.0",
-    "optainer": "file:"
+    "optainer": "file:",
+    "xlsx": "^0.18.5"
   }
 }
