@@ -1,11 +1,8 @@
 // Mapa del patio de contenedores
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'; 
-import { gsap } from 'gsap';
 import floorTexturePath from '../assets/textura-pared-grunge.jpg';
-import sceneTexturePath from '../assets/scene.jpg';
 import { fetchContenedores } from './FetchContainer';
 
 const ThreeDMap = () => {

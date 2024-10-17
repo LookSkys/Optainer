@@ -39,12 +39,12 @@
 }
 
 .boton-seleccionado {
-    background-color: #FF0000; /* Un verde brillante */
+    background-color: #FF0000; 
     color: white;
 }
 
 .boton-seleccionado:hover {
-    background-color: #f70909; /* Verde un poco más oscuro cuando se hace hover */
+    background-color: #f70909; 
     color: white;
 }
 

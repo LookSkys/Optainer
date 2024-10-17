@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BarraTorres } from "../components/BarraTorres/BarraTorres";
-import { ContenedorAvanzado } from "../components/ContenedorAvanzado/ContenedorAvanzado";
 import './MapaAvanzadoView.css'; // Importa el archivo CSS aquí
 import { parseLocation, filtrarContenedorPorId } from "./utils"; // Importa las funciones desde utils ACA SE AGREGA LA FUNCION DE FILTRAR POR ID
+import { FaSearch, FaPlus, FaTruckMoving } from "react-icons/fa";
 
 
 function MapaAvanzadoView() {
@@ -42,11 +42,11 @@ function MapaAvanzadoView() {
     }, []);
 
     // Función para cambiar la torre
-    const cambiarTorre = (nuevaTorre) => {
-        setTorreActual(nuevaTorre);
-        setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA
-        setContenedorId(""); // Limpiar el ID del contenedor al cambiar de torre ESTO SE AGREGA
-    };
+    // const cambiarTorre = (nuevaTorre) => {
+    //     setTorreActual(nuevaTorre);
+    //     setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA
+    //     setContenedorId(""); // Limpiar el ID del contenedor al cambiar de torre ESTO SE AGREGA
+    // };
 
     // Función para cambiar la profundidad
     const cambiarProfundidad = (nuevaProfundidad) => {
@@ -125,107 +125,116 @@ function MapaAvanzadoView() {
         <div style={{marginLeft: '95px'}}>
             <h2>VISTA AVANZADA</h2>
             <BarraTorres torreActual={torreActual} anteriorTorre={retrocederTorre} siguienteTorre={avanzarTorre}/>
+            <div className="row">
+    {/* Buscador centrado */}
+    <div className="col-md-6 d-flex align-items-center justify-content-center" style={{ marginBottom: '20px' }}>
+        <div className="d-flex align-items-center">
+            <input
+                type="text"
+                placeholder="Ingresa el ID del contenedor"
+                value={contenedorId}
+                onChange={(e) => setContenedorId(e.target.value)}
+                style={{
+                    padding: '8px 12px',
+                    borderRadius: '30px',
+                    border: '1px solid #ccc',
+                    marginRight: '10px',
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                    width: '250px',
+                }}
+            />
+            <button
+                onClick={filtrarContenedor}
+                style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: '#1d1e1e',
+                    color: 'white',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                    padding: 0,
+                    overflow: 'hidden',
+                }}
+            >
+                <FaSearch style={{ fontSize: '20px', margin: 0 }} />
+            </button>
+        </div>
+    </div>
 
-                <div className="row">
-                    <div className="col">
-                    {/* Campo de búsqueda para el ID del contenedor ESTE ES EL BOTON DE FILTRADO CON EL TEXTFIELD */}
-                    <div className="d-flex align-items-center">
-                    <h6 style={{marginLeft:'10px',marginRight:'15px'}}>Buscar contenedor por ID:</h6>
-                    <input
-                        type="text"
-                        placeholder="Ingresa el ID del contenedor"
-                        value={contenedorId}
-                        onChange={(e) => setContenedorId(e.target.value)}
-                    />
-                    <button onClick={filtrarContenedor}>Buscar</button>
-                    </div>
-                    </div>
-                    <div className="col">
-                {/* BOTONES PARA AGREGAR Y QUITAR CONTENEDORES */}
-                {/* Botón para mostrar el modal de Agregar */}
-                <button type="button" className="btn btn-danger" onClick={handleShowAgregar}>
-                    ➕ Agregar contenedor
-                </button>                
-                {/* Modal de Agregar contenedor */}
-                {showModalAgregar && (
-                    <>
-                        <div className="modal show fade d-block" tabIndex="-1" style={{ display: 'block' }} role="dialog">
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <h1 className="modal-title fs-5">Agregar contenedor</h1>
-                                        <button type="button" className="btn-close" onClick={handleCloseAgregar} aria-label="Close"></button>
-                                    </div>
-                                    <div className="modal-body">
-                                        {/* Contenido del modal */}
-                                        <h6>ID</h6>
-                                        <input
-                                        type="text"
-                                        placeholder="Ingresa el ID del contenedor"                                    
-                                        />
-                                        <h6 style={{marginTop: '12px'}}>Ubicacion</h6>
-                                        <input
-                                        type="text"
-                                        placeholder="Ingresa el ID del contenedor"                                    
-                                        />
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn btn-secondary" onClick={handleCloseAgregar}>
-                                            Cerrar
-                                        </button>
-                                        <button type="button" className="btn btn-success">
-                                            Agregar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+    {/* Botones a la derecha */}
+    <div className="col-md-6 d-flex justify-content-center align-items-center">
+        <button type="button" className="btn btn-danger" onClick={handleShowAgregar} style={{width:'40px', height:'40px', marginRight: '5px', borderRadius: '50%', alignItems:'center', padding: 0}}>
+            <FaPlus />
+        </button>
+        <button type="button" className="btn btn-danger" onClick={handleShowQuitar} style={{width:'40px', height:'40px',borderRadius: '50%', alignItems: 'center', padding: 0}}>
+            <FaTruckMoving />
+        </button>
+    </div>
+
+    {/* Modales de Agregar y Quitar */}
+    {showModalAgregar && (
+        <>
+            <div className="modal show fade d-block" tabIndex="-1" style={{ display: 'block' }} role="dialog">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5">Agregar contenedor</h1>
+                            <button type="button" className="btn-close" onClick={handleCloseAgregar} aria-label="Close"></button>
                         </div>
-                        {/* Modal backdrop */}
-                        <div className="modal-backdrop fade show" onClick={handleCloseAgregar}></div>
-                    </>
-                )}
-                    </div>
-                    <div className="col">
-                    {/* Botón para mostrar el modal de Quitar */}
-                <button type="button" className="btn btn-danger" onClick={handleShowQuitar}>
-                    ➖ Quitar contenedor
-                </button>               
-                {/* Modal de Quitar contenedor */}
-                {showModalQuitar && (
-                    <>
-                        <div className="modal show fade d-block" tabIndex="-1" style={{ display: 'block' }} role="dialog">
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <h1 className="modal-title fs-5">Quitar contenedor</h1>
-                                        <button type="button" className="btn-close" onClick={handleCloseQuitar} aria-label="Close"></button>
-                                    </div>
-                                    <div className="modal-body">
-                                        {/* Contenido del modal */}
-                                        <h6>ID</h6>
-                                        <input
-                                        type="text"
-                                        placeholder="Ingresa el ID del contenedor"                                    
-                                        />
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn btn-secondary" onClick={handleCloseQuitar}>
-                                            Cerrar
-                                        </button>
-                                        <button type="button" className="btn btn-danger">
-                                            Quitar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className="modal-body">
+                            <h6>ID</h6>
+                            <input type="text" placeholder="Ingresa el ID del contenedor" />
+                            <h6 style={{ marginTop: '12px' }}>Ubicación</h6>
+                            <input type="text" placeholder="Ingresa la ubicación del contenedor" />
                         </div>
-                        {/* Modal backdrop */}
-                        <div className="modal-backdrop fade show" onClick={handleCloseQuitar}></div>
-                    </>
-                )}
-            
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" onClick={handleCloseAgregar}>
+                                Cerrar
+                            </button>
+                            <button type="button" className="btn btn-success">
+                                Agregar
+                            </button>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div className="modal-backdrop fade show" onClick={handleCloseAgregar}></div>
+        </>
+    )}
+
+    {showModalQuitar && (
+        <>
+            <div className="modal show fade d-block" tabIndex="-1" style={{ display: 'block' }} role="dialog">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h1 className="modal-title fs-5">Quitar contenedor</h1>
+                            <button type="button" className="btn-close" onClick={handleCloseQuitar} aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <h6>ID</h6>
+                            <input type="text" placeholder="Ingresa el ID del contenedor" />
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" onClick={handleCloseQuitar}>
+                                Cerrar
+                            </button>
+                            <button type="button" className="btn btn-danger">
+                                Quitar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="modal-backdrop fade show" onClick={handleCloseQuitar}></div>
+        </>
+    )}
+</div>
 
 
 
