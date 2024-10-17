@@ -1,4 +1,5 @@
 import ThreeMap from '../components/ThreeMap'
+import ColorLegend from '../components/ColorLegend/ColorLegend';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 const Home = () => {
@@ -9,6 +10,7 @@ const Home = () => {
           <ThreeMap />
         </div>
       </section>
+    <ColorLegend/>
     </div>
   );
 };
