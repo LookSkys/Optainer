@@ -43,6 +43,7 @@ function MapaAvanzadoView() {
     // Función para cambiar la profundidad
     const cambiarProfundidad = (nuevaProfundidad) => {
         setProfundidadActual(nuevaProfundidad);
+
     };
 
     if (loading) {
@@ -89,52 +90,91 @@ function MapaAvanzadoView() {
     };
 
     return (
-        <div>
-            <h1>Vista Avanzada de Contenedores</h1>
-            
+        <div style={{marginLeft: '95px'}}>
+            <h2>VISTA AVANZADA</h2>
+            <BarraTorres torreActual={torreActual} anteriorTorre={retrocederTorre} siguienteTorre={avanzarTorre}/>
             {/* Título de la torre con botones para cambiar */}
-            <div>
-                <button onClick={retrocederTorre}>Anterior Torre</button>
-                <h2>Torre {torreActual}</h2>
-                <button onClick={avanzarTorre}>Siguiente Torre</button>
-            </div>
-
+            
             {/* Botones de profundidad */}
-            <div>
+            {/* <div>
                 {[1, 2, 3].map((nivel) => (
-                    <button
+                    <div className="row">
+                    <button type="button" className="btn btn-danger boton-profundidad "
                         key={nivel}
                         onClick={() => cambiarProfundidad(nivel)}
                         disabled={profundidadActual === nivel}
                     >
-                        Profundidad {nivel}
+                        {nivel}
                     </button>
-                ))}
-            </div>
-
-            {/* Cuadrícula 2D con el eje Y invertido */}
-            <div className="grid-container">
-                {grid.slice().reverse().map((fila, filaIndex) => ( // Invierte las filas aquí
-                    <div key={filaIndex} className="grid-row">
-                        {fila.map((contenedor, colIndex) => (
-                            <div key={colIndex} className="grid-cell">
-                                {contenedor ? (
-                                    <>
-                                        <div>ID: {contenedor.contenedor}</div>
-                                        <div>Ubicación: {contenedor.ubicacionParseada.ubicacionOriginal}</div>
-                                    </>
-                                ) : (
-                                    "Vacío"
-                                )}
-                            </div>
-                        ))}
                     </div>
                 ))}
-            </div>
+            </div> */}
+            
 
-            {/* Componentes adicionales */}
-            <BarraTorres />
-            <ContenedorAvanzado />
+            {/* Cuadrícula 2D con el eje Y invertido */}
+            <div className="row">
+                <div className="col-1">
+                    <br /><h2>5</h2> <br /><br /><br />
+                    <h2>4</h2> <br /><br /><br />
+                    <h2>3</h2> <br /><br /><br />
+                    <h2>2</h2> <br /> <br /> <br />
+                    <h2>1</h2> 
+                </div>
+                <div className="col-10">
+                    <div className="grid-container">
+                    {grid.slice().reverse().map((fila, filaIndex) => ( // Invierte las filas aquí
+                        <div key={filaIndex} className="grid-row">
+                            {fila.map((contenedor, colIndex) => (
+                                <div key={colIndex} className="grid-cell">
+                                    {contenedor ? (
+                                        <>
+                                            <div>Contenedor: <br /> {contenedor.contenedor}</div>
+                                            <div> <br />Ubicación: <br /> {contenedor.ubicacionParseada.ubicacionOriginal}</div>
+                                        </>
+                                    ) : (
+                                        "Vacío"
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+                    </div>
+                    {/* Fila con numeros abajo */}
+                    <div className="row">
+                        <div className="col text-center">
+                            <h2>1</h2>
+                        </div>
+                        <div className="col text-center">
+                            <h2>2</h2>
+                        </div>
+                        <div className="col text-center">
+                            <h2>3</h2>
+                        </div>
+                        <div className="col text-center">
+                            <h2>4</h2>
+                        </div>
+                        <div className="col text-center">
+                            <h2>5</h2>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-1" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                    <div>
+                    {[1, 2, 3].map((nivel) => (
+                        <div className="row">
+                        <button type="button" className="btn btn-danger boton-profundidad "
+                            key={nivel}
+                            onClick={() => cambiarProfundidad(nivel)}
+                            disabled={profundidadActual === nivel}
+                        >
+                            {nivel}
+                        </button>
+                        </div>
+                    ))}
+                    </div>
+                </div>
+            </div>
+        
         </div>
     );
 }
