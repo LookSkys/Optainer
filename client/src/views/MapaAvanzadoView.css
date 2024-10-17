@@ -56,3 +56,7 @@
 .boton-no-seleccionado:hover {
     background-color: #a7a5a5; /* Gris un poco más oscuro cuando se hace hover */
 }
+
+.botonModal {
+    width: 100px;
+}
