@@ -6,7 +6,7 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { gsap } from 'gsap';
 import floorTexturePath from '../assets/textura-pared-grunge.jpg';
 import sceneTexturePath from '../assets/scene.jpg';
-
+import { fetchContenedores } from './FetchContainer';
 
 const ThreeDMap = () => {
   const mountRef = useRef(null);
@@ -185,12 +185,14 @@ const ThreeDMap = () => {
     // Crear y añadir el bloque al escenario
     const blockGroup = [
         createBlock(0, 0, 0),
-        createBlock(10, 0, 0),
-        createBlock(20, 0, 0),
-        createBlock(30, 0, 0),
+        createBlock(8, 0, 0),
+        createBlock(16, 0, 0),
+        createBlock(24, 0, 0),
+        createBlock(32, 0, 0),
         createBlock(40, 0, 0),
-        createBlock(50, 0, 0),
-        
+        createBlock(48, 0, 0),
+        createBlock(56, 0, 0),
+
         createBlockRefee(-20, 0, 0),
         createBlockRefee(-26, 0, 0),
     ];
@@ -311,119 +313,52 @@ const ThreeDMap = () => {
         updateColorsInColumn(block);
     }
 
+    async function loadContenedores() {
+        const torres = {"A": 0,"B": 1,"C": 2,"D": 3,"E": 4,"F": 5,"G": 6};
+        try {
+          const contenedoresData = await fetchContenedores();
+
+          const contenedoresOrdenados = contenedoresData
+            .filter(contenedor => {
+                const { ubicacionParseada } = contenedor;
+                return ubicacionParseada.torre in torres; // Filtramos solo torres válidas
+            })
+            .sort((a, b) => {
+                const alturaA = a.ubicacionParseada.z; // Suponiendo que 'z' es la altura
+                const alturaB = b.ubicacionParseada.z;
+                const torreA = torres[a.ubicacionParseada.torre];
+                const torreB = torres[b.ubicacionParseada.torre];
+
+                // Primero comparamos por torre (A, B, C, etc.) y luego por altura
+                if (torreA === torreB) {
+                    return alturaA - alturaB; // Ordenar por altura si son de la misma torre
+                }
+                return torreA - torreB; // Ordenar por torre
+            });
 
 
-    // Ejemplo de actualización de un contenedor (puedes reemplazar esto con datos en tiempo real)
-    setTimeout(() => {
-        updateContainer(blockGroup[0], { x: 1, y: 1, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 1, y: 2, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 1, y: 3, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 1, y: 4, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 2, y: 1, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 1, y: 5, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 2, y: 2, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 2, y: 3, z: 1}, true); // Añadir contenedor
 
-        updateContainer(blockGroup[0], { x: 1, y: 1, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 1, y: 2, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 1, y: 3, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 1, y: 4, z: 2}, true); // Añadir contenedor
-
-        updateContainer(blockGroup[0], { x: 2, y: 1, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 2, y: 2, z: 2}, true); // Añadir contenedor
-
-
-        updateColorsInColumn(blockGroup[0]);
-    }, 100);
-
-    setTimeout(() => {
-        updateContainer(blockGroup[0], { x: 3, y: 1, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 3, y: 2, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 3, y: 1, z: 1}, true); // Añadir contenedor
-        updateColorsInColumn(blockGroup[0]);
-    }, 100);
-    setTimeout(() => {
-        updateContainer(blockGroup[0], { x: 5, y: 1, z: 3}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 5, y: 2, z: 3}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 5, y: 3, z: 3}, true); // Añadir contenedor
-        updateColorsInColumn(blockGroup[0]);
-    }, 3000);
-
-    setTimeout(() => {
-        updateContainer(blockGroup[1], { x: 1, y: 1, z: 3}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 1, y: 2, z: 3}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 1, y: 3, z: 3}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 1, y: 4, z: 3}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 1, y: 5, z: 3}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 2, y: 1, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 2, y: 2, z: 2}, true); // Añadir contenedor
-        updateColorsInColumn(blockGroup[1]);
-    }, 3000);
-
-    
-
-    setTimeout(() => {
-        updateContainer(blockGroup[0], { x: 4, y: 1, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 3, y: 2, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 4, y: 1, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 4, y: 2, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 4, y: 3, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[0], { x: 5, y: 1, z: 1}, true); // Añadir contenedor
-
-        updateColorsInColumn(blockGroup[0]); 
-
-        updateContainer(blockGroup[1], { x: 1, y: 1, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 1, y: 2, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 1, y: 3, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 1, y: 4, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 1, y: 1, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[1], { x: 1, y: 2, z: 1}, true); // Añadir contenedor
-        
-        updateColorsInColumn(blockGroup[1]);
-
-        updateContainer(blockGroup[2], { x: 1, y: 1, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[2], { x: 1, y: 2, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[2], { x: 1, y: 3, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[2], { x: 1, y: 4, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[2], { x: 2, y: 1, z: 1}, true); // Añadir contenedor
-        
-        updateColorsInColumn(blockGroup[2]);
-
-        updateContainer(blockGroup[3], { x: 1, y: 1, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[3], { x: 1, y: 2, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[3], { x: 1, y: 3, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[3], { x: 1, y: 4, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[3], { x: 1, y: 1, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[3], { x: 1, y: 2, z: 2}, true); // Añadir contenedor
-
-        updateColorsInColumn(blockGroup[3]);
-
-        
-        
-    }, 10);
-
-    setTimeout(() => {
-        updateContainer(blockGroup[4], { x: 1, y: 1, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 1, y: 2, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 1, y: 3, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 1, y: 4, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 2, y: 1, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 1, y: 5, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 2, y: 2, z: 1}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 2, y: 3, z: 1}, true); // Añadir contenedor
-
-        updateContainer(blockGroup[4], { x: 1, y: 1, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 1, y: 2, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 1, y: 3, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 1, y: 4, z: 2}, true); // Añadir contenedor
-
-        updateContainer(blockGroup[4], { x: 2, y: 1, z: 2}, true); // Añadir contenedor
-        updateContainer(blockGroup[4], { x: 2, y: 2, z: 2}, true); // Añadir contenedor
-
-
-        updateColorsInColumn(blockGroup[4]);
-    }, 10);
-
+            contenedoresOrdenados.forEach(contenedor => {
+            const { id, ubi, ubicacionParseada, visado} = contenedor;
+            //console.log(ubicacionParseada)
+            const { torre, z, x, y, original } = ubicacionParseada;
+            //console.log(torre, z,x,y)
+            
+            if(x) {
+                if (torre in torres) {
+                    const blockIndex = torres[torre];
+                    updateContainer(blockGroup[blockIndex], { x: x, y: y, z: z }, true);
+                    updateColorsInColumn(blockGroup[blockIndex])
+                  }
+            }
+          });
+        } catch (error) {
+          console.error("Error al cargar los contenedores: ", error);
+        }
+      }
+  
+    // Llamar a la función al montar el componente
+    loadContenedores();
 
 
     // Hacer que el piso reciba sombras
@@ -459,7 +394,6 @@ const ThreeDMap = () => {
 
     function animate() {
         requestAnimationFrame(animate);
-        
         controls.update();  // Actualiza los controles en cada cuadro
 
         renderer.render(scene, camera);
