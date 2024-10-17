@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { BarraTorres } from "../components/BarraTorres/BarraTorres";
 import { ContenedorAvanzado } from "../components/ContenedorAvanzado/ContenedorAvanzado";
 import './MapaAvanzadoView.css'; // Importa el archivo CSS aquí
-import { parseLocation } from "./utils";
+import { parseLocation, filtrarContenedorPorId } from "./utils"; // Importa las funciones desde utils ACA SE AGREGA LA FUNCION DE FILTRAR POR ID
 
 function MapaAvanzadoView() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [profundidadActual, setProfundidadActual] = useState(1);
     const [torreActual, setTorreActual] = useState('A'); // Nueva torre actual
+    const [contenedorId, setContenedorId] = useState(""); // Estado para el ID del contenedor ESTO SE AGREGA
+    const [contenedorResaltado, setContenedorResaltado] = useState(""); // Estado para el contenedor resaltado ESTO SE AGREGA
 
     // Array con las torres extendidas
     const torres = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
@@ -38,12 +40,26 @@ function MapaAvanzadoView() {
     // Función para cambiar la torre
     const cambiarTorre = (nuevaTorre) => {
         setTorreActual(nuevaTorre);
+        setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA
+        setContenedorId(""); // Limpiar el ID del contenedor al cambiar de torre ESTO SE AGREGA
     };
 
     // Función para cambiar la profundidad
     const cambiarProfundidad = (nuevaProfundidad) => {
         setProfundidadActual(nuevaProfundidad);
 
+    };
+
+    // Función de filtrado TODA ESTA FUNCION
+    const filtrarContenedor = () => {
+        const contenedorEncontrado = filtrarContenedorPorId(data, contenedorId);
+        if (contenedorEncontrado) {
+            setTorreActual(contenedorEncontrado.ubicacionParseada.torre);
+            setProfundidadActual(contenedorEncontrado.ubicacionParseada.z);
+            setContenedorResaltado(contenedorId); // Establecer el contenedor resaltado
+        } else {
+            alert("Contenedor no encontrado");
+        }
     };
 
     if (loading) {
@@ -79,6 +95,8 @@ function MapaAvanzadoView() {
             const currentIndex = torres.indexOf(prevTorre);
             return torres[(currentIndex + 1) % torres.length]; // Avanza en el array de torres
         });
+        setContenedorId(""); // Limpiar el ID del contenedor al cambiar de torre ESTO SE AGREGA
+        setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA
     };
 
     // Función para cambiar la torre (retroceder)
@@ -87,12 +105,26 @@ function MapaAvanzadoView() {
             const currentIndex = torres.indexOf(prevTorre);
             return torres[(currentIndex - 1 + torres.length) % torres.length]; // Retrocede en el array de torres
         });
+        setContenedorId(""); // Limpiar el ID del contenedor al cambiar de torre ESTO SE AGREGA
+        setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA        
     };
 
     return (
         <div style={{marginLeft: '95px'}}>
             <h2>VISTA AVANZADA</h2>
             <BarraTorres torreActual={torreActual} anteriorTorre={retrocederTorre} siguienteTorre={avanzarTorre}/>
+                {/* Campo de búsqueda para el ID del contenedor ESTE ES EL BOTON DE FILTRADO CON EL TEXTFIELD */}
+            <div className="d-flex align-items-center">
+                <h6 style={{marginLeft:'10px',marginRight:'15px'}}>Buscar contenedor por ID:</h6>
+                <input
+                    type="text"
+                    placeholder="Ingresa el ID del contenedor"
+                    value={contenedorId}
+                    onChange={(e) => setContenedorId(e.target.value)}
+                />
+                <button onClick={filtrarContenedor}>Buscar</button>
+            </div>
+
             {/* Título de la torre con botones para cambiar */}
             
             {/* Botones de profundidad */}
@@ -121,24 +153,30 @@ function MapaAvanzadoView() {
                     <h2>1</h2> 
                 </div>
                 <div className="col-10">
-                    <div className="grid-container">
-                    {grid.slice().reverse().map((fila, filaIndex) => ( // Invierte las filas aquí
-                        <div key={filaIndex} className="grid-row">
-                            {fila.map((contenedor, colIndex) => (
-                                <div key={colIndex} className="grid-cell">
+                <div className="grid-container">
+                {grid.slice().reverse().map((fila, filaIndex) => (
+                    <div key={filaIndex} className="grid-row">
+                        {fila.map((contenedor, colIndex) => {
+                            const isHighlighted = contenedor && contenedor.contenedor === contenedorResaltado; // Comprobar si es el contenedor resaltado DESDE ACA
+                            return (
+                                <div
+                                    key={colIndex}
+                                    className={`grid-cell ${isHighlighted ? "highlight" : ""}`} // Aplicar clase 'highlight' si es el contenedor buscado HASTA ACA
+                                >
                                     {contenedor ? (
                                         <>
-                                            <div>Contenedor: <br /> {contenedor.contenedor}</div>
-                                            <div> <br />Ubicación: <br /> {contenedor.ubicacionParseada.ubicacionOriginal}</div>
+                                            <div>ID: {contenedor.contenedor}</div>
+                                            <div>Ubicación: {contenedor.ubicacionParseada.ubicacionOriginal}</div>
                                         </>
                                     ) : (
                                         "Vacío"
                                     )}
                                 </div>
-                            ))}
-                        </div>
-                    ))}
+                            );
+                        })}
                     </div>
+                ))}
+            </div>
                     {/* Fila con numeros abajo */}
                     <div className="row">
                         <div className="col text-center">
