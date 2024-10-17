@@ -1,0 +1,37 @@
+.color-legend {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(30, 29, 29, 0.9); /* Fondo blanco semi-transparente */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    z-index: 1000;
+    Color: White; /* Asegura que esté por encima de otros elementos */
+  }
+  
+  .color-legend h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .color-legend ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .color-legend li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .color-box {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd; /* Borde gris para el cuadro */
+  }
+  
