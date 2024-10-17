@@ -33,3 +33,8 @@
 
 }
 
+.grid-cell.highlight {
+    background-color: #ffeb3b; /* Color de fondo para destacar el contenedor */
+    border: 2px solid #ff9800; /* Borde para resaltar más */
+}
+
