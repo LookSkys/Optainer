@@ -45,18 +45,6 @@ function SideBarLateral() {
             <div className="icon-wrapper">
               <button
                 className="icon-button"
-                onClick={() => navigate('/metricas')}
-                onMouseEnter={() => handleMouseEnter('Métricas')}
-                onMouseLeave={handleMouseLeave}
-              >
-                <FaFileInvoiceDollar />
-              </button>
-              {hoveredButton === 'Métricas' && <div className="label">Métricas</div>}
-            </div>
-
-            <div className="icon-wrapper">
-              <button
-                className="icon-button"
                 onClick={() => navigate('/avanzado')}
                 onMouseEnter={() => handleMouseEnter('Avanzado')}
                 onMouseLeave={handleMouseLeave}
@@ -69,27 +57,29 @@ function SideBarLateral() {
             <div className="icon-wrapper">
               <button
                 className="icon-button"
-                onClick={() => navigate('/')}
-                onMouseEnter={() => handleMouseEnter('Checklist')}
+                onClick={() => navigate('/metricas')}
+                onMouseEnter={() => handleMouseEnter('Métricas')}
                 onMouseLeave={handleMouseLeave}
               >
-                <FaClipboardCheck />
+                <FaFileInvoiceDollar />
               </button>
-              {hoveredButton === 'Checklist' && <div className="label">Checklist</div>}
-            </div>
+              {hoveredButton === 'Métricas' && <div className="label">Métricas</div>}
+            </div>           
 
             <div className="icon-wrapper">
               <button
                 className="icon-button"
-                onClick={() => navigate('/')}
-                onMouseEnter={() => handleMouseEnter('Herramientas')}
+                onClick={() => navigate('/Configuracion')}
+                onMouseEnter={() => handleMouseEnter('Configuracion')}
                 onMouseLeave={handleMouseLeave}
               >
                 <FaWrench />
               </button>
-              {hoveredButton === 'Herramientas' && <div className="label">Herramientas</div>}
+              {hoveredButton === 'Configuracion' && <div className="label">Configuracion</div>}
             </div>
           </div>
+
+          
 
           <div className="bottom-buttons">
             <div className="divider"></div>

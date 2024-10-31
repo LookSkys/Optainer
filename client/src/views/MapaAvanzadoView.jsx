@@ -123,7 +123,7 @@ function MapaAvanzadoView() {
 
     return (
         <div style={{marginLeft: '95px'}}>
-            <h2>VISTA AVANZADA</h2>
+            <h2>INVENTARIO AVANZADO</h2>
             <BarraTorres torreActual={torreActual} anteriorTorre={retrocederTorre} siguienteTorre={avanzarTorre}/>
             <div className="row">
     {/* Buscador centrado */}
