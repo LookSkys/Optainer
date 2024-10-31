@@ -66,7 +66,8 @@ const ThreeDMap = () => {
     const floorGeometry = new THREE.PlaneGeometry(150, 100);
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.rotation.x = -Math.PI / 2;
-    floor.position.y = 0;
+    floor.position.x = 20;
+    floor.position.y = 0.5;
     scene.add(floor);
 
   
