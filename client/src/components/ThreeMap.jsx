@@ -389,7 +389,7 @@ const ThreeDMap = () => {
 
 
             contenedoresOrdenados.forEach(contenedor => {
-            const { id, ubi, ubicacionParseada, visado} = contenedor;
+            const { id, ubi, ubicacionParseada, zona, visado} = contenedor;
             //console.log(ubicacionParseada)
             const { torre, z, x, y, original } = ubicacionParseada;
             //console.log(torre, z,x,y)

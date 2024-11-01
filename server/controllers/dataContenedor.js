@@ -1,89 +1,55 @@
-// controllers/dataController.js
-const path = require('path');
-const xlsx = require('xlsx');
-
-// Función para leer el archivo Excel
-const readExcelFile = () => {
-    const filePath = path.join(__dirname, '..', 'uploads', 'InventarioContenedor OPTAINER.xlsx'); // Cambia 'tu_archivo.xlsx' por el nombre de tu archivo
-    const workbook = xlsx.readFile(filePath);
-    const sheetName = workbook.SheetNames[0]; // Asumiendo que quieres la primera hoja
-    const sheet = workbook.Sheets[sheetName];
-
-    return xlsx.utils.sheet_to_json(sheet);
-};
-
 // Controlador para obtener los datos de los contenedores
-const getContenedores = (req, res) => {
+// controllers/dataController.js
+const Ubicacion = require('../models/ubicacion');
+
+const getContenedores = async (req, res) => {
+  try {
+    const ubicaciones = await Ubicacion.find(); // Obtiene todas las ubicaciones
+    const filteredData = ubicaciones.map((ubicacion) => ({
+        contenedor: ubicacion.Contenedor,
+        ubicacion: ubicacion.Ubicación,
+        zona: ubicacion.Zona,
+        visado: ubicacion.Visado,
+    }));
+    res.json(filteredData);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener los datos de MongoDB' });
+  }
+};
+
+const addContenedor = async (req, res) => {
+    const { contenedor, ubicacion } = req.body;
+  
     try {
-        const data = readExcelFile();
-        const filteredData = data.map(row => ({
-            contenedor: row['Contenedor'],
-            ubicacion: row['Ubicación'],
-            visado: row['Visado'],
-        }));
-        res.json(filteredData);
+      const nuevaUbicacion = new Ubicacion({
+        Contenedor: contenedor,
+        Ubicacion: ubicacion,
+        Zona: '',
+        Visado: '',
+      });
+  
+      await nuevaUbicacion.save(); // Guarda la nueva ubicación en MongoDB
+      res.status(201).json({ message: 'Contenedor agregado a MongoDB' });
     } catch (error) {
-        res.status(500).json({ error: 'Error al leer el archivo' });
+      res.status(500).json({ error: 'Error al agregar el contenedor en MongoDB' });
     }
-};
+  };
+  
 
-const writeExcelFile = (workbook, filePath) => {
-    xlsx.writeFile(workbook, filePath);
-};
-
-const addContenedor = (req, res) => {
-    console.log('Cuerpo de la solicitud:', req.body);
-    const { contenedor, ubicacion} = req.body;
-    console.log("Datos recibidos:", contenedor, ubicacion); 
+  const removeContenedor = async (req, res) => {
+    const { id } = req.params;
+  
     try {
-        const filePath = path.join(__dirname, '..', 'uploads', 'InventarioContenedor OPTAINER.xlsx');
-        const workbook = xlsx.readFile(filePath);
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-
-        // Obtener los datos existentes y agregar el nuevo contenedor
-        const data = xlsx.utils.sheet_to_json(sheet);
-        data.push({ 'Contenedor': contenedor, 'Ubicación': ubicacion}); // Correcto
-
-        // Volver a convertir el JSON a hoja de cálculo y escribir el archivo
-        const newSheet = xlsx.utils.json_to_sheet(data);
-        workbook.Sheets[sheetName] = newSheet;
-        xlsx.writeFile(workbook, filePath);
-
-        res.status(201).json({ message: 'Contenedor agregado' });
+      await Ubicacion.findByIdAndDelete(id); // Elimina la ubicación por ID
+      res.json({ message: 'Contenedor eliminado de MongoDB' });
     } catch (error) {
-        console.error(error); // Añadir para depuración
-        res.status(500).json({ error: 'Error al agregar el contenedor' });
+      res.status(500).json({ error: 'Error al eliminar el contenedor en MongoDB' });
     }
-};
-
-const removeContenedor = (req, res) => {
-    const { id } = req.params; // El ID debe coincidir con el ID del contenedor que quieres eliminar
-    try {
-        const filePath = path.join(__dirname, '..', 'uploads', 'InventarioContenedor OPTAINER.xlsx');
-        const workbook = xlsx.readFile(filePath);
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-
-        // Obtener los datos existentes y filtrar el contenedor que se quiere eliminar
-        let data = xlsx.utils.sheet_to_json(sheet);
-        data = data.filter(row => row['Contenedor'] !== id); // Correcto
-
-        // Volver a convertir el JSON a hoja de cálculo y escribir el archivo
-        const newSheet = xlsx.utils.json_to_sheet(data);
-        workbook.Sheets[sheetName] = newSheet;
-        xlsx.writeFile(workbook, filePath);
-
-        res.json({ message: 'Contenedor eliminado' });
-    } catch (error) {
-        console.error(error); // Añadir para depuración
-        res.status(500).json({ error: 'Error al eliminar el contenedor' });
-    }
-};
+  };
+  
 
 module.exports = {
     getContenedores,
     addContenedor,
     removeContenedor,
-    writeExcelFile
 };
