@@ -4,6 +4,7 @@
     margin-left: 10px;
     padding-left: 0;
     width: 300px;
+    z-index: 900;
 }
 
 .card-custom {

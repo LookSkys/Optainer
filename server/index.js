@@ -5,9 +5,17 @@ const cors = require('cors');
 const app = express();
 const contenedorRoutes = require('./routes/contenedorRoutes');
 const port = process.env.PORT || 5000;
+const dotenv = require('dotenv');
+dotenv.config({ path: './config.env'});
 
 // Middleware para analizar JSON
 app.use(express.json());
+
+mongoose.connect(process.env.DB_CONNECTION)
+  .then(connection => {
+    console.log('Connected successfully')
+  })
+  .catch(console.log);
 
 app.use(cors());
 

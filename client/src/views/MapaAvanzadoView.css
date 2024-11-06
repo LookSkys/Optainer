@@ -12,13 +12,51 @@
 }
 
 .grid-cell {
-    width: 100px;
-    height: 100px;
+    height: 105px;
+    width: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: #f0f0f0;
-    border: 1px solid #ddd;
+    border: 1px solid black;
     text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 7px;
+    margin-bottom: 1px;
+}
+
+.boton-profundidad {
+    width: 50px;
+    margin-bottom: 20px;
+
+}
+
+.grid-cell.highlight {
+    background-color: #ffeb3b; /* Color de fondo para destacar el contenedor */
+    border: 2px solid #ff9800; /* Borde para resaltar más */
+}
+
+.boton-seleccionado {
+    background-color: #FF0000; 
+    color: white;
+}
+
+.boton-seleccionado:hover {
+    background-color: #f70909; 
+    color: white;
+}
+
+.boton-no-seleccionado {
+    background-color: #ccc; /* Un gris claro */
+    color: black;
+}
+
+.boton-no-seleccionado:hover {
+    background-color: #a7a5a5; /* Gris un poco más oscuro cuando se hace hover */
+}
+
+.botonModal {
+    width: 100px;
 }

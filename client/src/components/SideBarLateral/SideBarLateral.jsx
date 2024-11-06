@@ -1,15 +1,24 @@
 import { useState } from 'react';
 import { FaSignOutAlt, FaBars } from 'react-icons/fa';
-import { FaHouse, FaBox, FaWrench, FaClipboardCheck, FaFileInvoiceDollar} from 'react-icons/fa6';
+import { FaHouse, FaBox, FaWrench, FaClipboardCheck, FaFileInvoiceDollar } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
-import './SideBarLateral.css'; // Asegúrate de tener el CSS adecuado
+import './SideBarLateral.css';
 
 function SideBarLateral() {
   const [isActive, setIsActive] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState(null); // Estado para el hover
   const navigate = useNavigate();
 
   const handleToggle = () => {
     setIsActive(!isActive);
+  };
+
+  const handleMouseEnter = (label) => {
+    setHoveredButton(label);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredButton(null);
   };
 
   return (
@@ -21,16 +30,70 @@ function SideBarLateral() {
       {isActive && (
         <aside className="menu">
           <div className="top-buttons">
-            <button className="icon-button" onClick={() => navigate('/home')}><FaHouse /></button>
-            <button className="icon-button" onClick={() => navigate('/metricas')}><FaFileInvoiceDollar /></button>
-            <button className="icon-button" onClick={() => navigate('/avanzado')}><FaBox /></button>
-            <button className="icon-button" onClick={() => navigate('/')}><FaClipboardCheck /></button>
-            <button className="icon-button" onClick={() => navigate('/')}><FaWrench /></button>
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/home')}
+                onMouseEnter={() => handleMouseEnter('Home')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaHouse />
+              </button>
+              {hoveredButton === 'Home' && <div className="label">Home</div>}
+            </div>
+
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/avanzado')}
+                onMouseEnter={() => handleMouseEnter('Avanzado')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaBox />
+              </button>
+              {hoveredButton === 'Avanzado' && <div className="label">Avanzado</div>}
+            </div>
+
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/metricas')}
+                onMouseEnter={() => handleMouseEnter('Métricas')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaFileInvoiceDollar />
+              </button>
+              {hoveredButton === 'Métricas' && <div className="label">Métricas</div>}
+            </div>           
+
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/Configuracion')}
+                onMouseEnter={() => handleMouseEnter('Configuracion')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaWrench />
+              </button>
+              {hoveredButton === 'Configuracion' && <div className="label">Configuracion</div>}
+            </div>
           </div>
 
+          
+
           <div className="bottom-buttons">
-            <div className='divider'></div>
-            <button className="icon-button" onClick={() => navigate('/')}><FaSignOutAlt /></button>
+            <div className="divider"></div>
+            <div className="icon-wrapper">
+              <button
+                className="icon-button"
+                onClick={() => navigate('/')}
+                onMouseEnter={() => handleMouseEnter('Salir')}
+                onMouseLeave={handleMouseLeave}
+              >
+                <FaSignOutAlt />
+              </button>
+              {hoveredButton === 'Salir' && <div className="label">Salir</div>}
+            </div>
           </div>
         </aside>
       )}
