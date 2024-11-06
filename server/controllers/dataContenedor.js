@@ -1,32 +1,57 @@
-// controllers/dataController.js
-const path = require('path');
-const xlsx = require('xlsx');
-
-// Función para leer el archivo Excel
-const readExcelFile = () => {
-    const filePath = path.join(__dirname, '..', 'uploads', 'InventarioContenedor OPTAINER.xlsx'); // Cambia 'tu_archivo.xlsx' por el nombre de tu archivo
-    const workbook = xlsx.readFile(filePath);
-    const sheetName = workbook.SheetNames[0]; // Asumiendo que quieres la primera hoja
-    const sheet = workbook.Sheets[sheetName];
-
-    return xlsx.utils.sheet_to_json(sheet);
-};
-
 // Controlador para obtener los datos de los contenedores
-const getContenedores = (req, res) => {
-    try {
-        const data = readExcelFile();
-        const filteredData = data.map(row => ({
-            contenedor: row['Contenedor'],
-            ubicacion: row['Ubicación'],
-            visado: row['Visado'],
-        }));
-        res.json(filteredData);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al leer el archivo' });
-    }
+// controllers/dataController.js
+const Ubicacion = require('../models/ubicacion');
+
+const getContenedores = async (req, res) => {
+  try {
+    const ubicaciones = await Ubicacion.find(); // Obtiene todas las ubicaciones
+    const filteredData = ubicaciones.map((ubicacion) => ({
+        contenedor: ubicacion.Contenedor,
+        ubicacion: ubicacion.Ubicación,
+        zona: ubicacion.Zona,
+        visado: ubicacion.Visado,
+    }));
+    res.json(filteredData);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener los datos de MongoDB' });
+  }
 };
+
+const addContenedor = async (req, res) => {
+  const { contenedor, ubicacion, zona = '', visado = false } = req.body; // Extrae los datos del body, con valores por defecto
+
+  try {
+    const nuevaUbicacion = new Ubicacion({
+      Contenedor: contenedor, 
+      Ubicación: ubicacion,
+      Zona: zona,
+      Visado: visado
+    });
+
+    const savedUbicacion = await nuevaUbicacion.save(); // Guarda en la base de datos
+    console.log(savedUbicacion); // Verifica que los datos se hayan guardado correctamente
+    res.status(201).json({ message: 'Contenedor agregado a MongoDB', data: savedUbicacion });
+  } catch (error) {
+    console.error("Error al guardar en MongoDB:", error); // Log para diagnosticar el error
+    res.status(500).json({ error: 'Error al agregar el contenedor en MongoDB' });
+  }
+};
+  
+
+  const removeContenedor = async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      await Ubicacion.findByIdAndDelete(id); // Elimina la ubicación por ID
+      res.json({ message: 'Contenedor eliminado de MongoDB' });
+    } catch (error) {
+      res.status(500).json({ error: 'Error al eliminar el contenedor en MongoDB' });
+    }
+  };
+  
 
 module.exports = {
     getContenedores,
+    addContenedor,
+    removeContenedor,
 };

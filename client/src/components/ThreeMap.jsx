@@ -1,12 +1,10 @@
 // Mapa del patio de contenedores
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'; 
-import { gsap } from 'gsap';
 import floorTexturePath from '../assets/textura-pared-grunge.jpg';
-import sceneTexturePath from '../assets/scene.jpg';
 import { fetchContenedores } from './FetchContainer';
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 
 const ThreeDMap = () => {
   const mountRef = useRef(null);
@@ -68,7 +66,8 @@ const ThreeDMap = () => {
     const floorGeometry = new THREE.PlaneGeometry(150, 100);
     const floor = new THREE.Mesh(floorGeometry, floorMaterial);
     floor.rotation.x = -Math.PI / 2;
-    floor.position.y = 0;
+    floor.position.x = 20;
+    floor.position.y = 0.5;
     scene.add(floor);
 
   
@@ -103,6 +102,26 @@ const ThreeDMap = () => {
 
     // Crear la geometría del prisma rectangular
     const geometry = new THREE.BoxGeometry(width, height, depth);
+
+    let containerGeometry; // Variable para almacenar la geometría del modelo
+
+    const loader = new STLLoader();
+    const modelPath = new URL('../models/CONTAINER.STL', import.meta.url).href;
+
+    loader.load(
+        modelPath,
+        (geometry) => {
+            // Asigna solo la geometría a containerGeometry
+            containerGeometry = geometry;
+            containerGeometry.computeBoundingBox();
+            // Aquí puedes hacer más ajustes si es necesario
+        },
+        undefined,
+        (error) => {
+            console.error('Error al cargar el archivo STL:', error);
+        }
+    );
+
     const geometryRefee = new THREE.BoxGeometry(widthRefee, heightRefee, depthRefee);
 
     // Crear la geometría del borde
@@ -185,16 +204,16 @@ const ThreeDMap = () => {
     // Crear y añadir el bloque al escenario
     const blockGroup = [
         createBlock(0, 0, 0),
-        createBlock(8, 0, 0),
-        createBlock(16, 0, 0),
-        createBlock(24, 0, 0),
-        createBlock(32, 0, 0),
-        createBlock(40, 0, 0),
-        createBlock(48, 0, 0),
-        createBlock(56, 0, 0),
+        createBlock(9, 0, 1),
+        createBlock(18, 0, 2),
+        createBlock(27, 0, 3),
+        createBlock(36, 0, 4),
+        createBlock(45, 0, 5),
+        createBlock(54, 0, 7),
+        createBlock(63, 0, 8),
 
-        createBlockRefee(-20, 0, 0),
-        createBlockRefee(-26, 0, 0),
+        createBlockRefee(-20, 0, 6),
+        createBlockRefee(-26, 0, 6),
     ];
 
     // Array de colores (uno por cada altura)
@@ -218,20 +237,24 @@ const ThreeDMap = () => {
             if (blockKey === blockId) {
             const maxHeight = columnHeights[key]; // Obtener la altura máxima para esa clave
             //console.log(`Lectura de altura máxima: ${maxHeight}, para la clave: ${key} (bloque: ${blockKey}, columna: ${column}, fila: ${row})`);
-    
+                
             // Definir el color basado en la altura máxima
             const color = colors[maxHeight - 1] || 0xeeeeee; // Por defecto a gris si no hay altura
     
             // Iterar sobre cada altura posible en esa columna y fila
             for (let heightLevel = 1; heightLevel <= maxHeight; heightLevel++) {
                 // Buscar el contenedor en la posición actual de bloque, columna, fila y altura
+                let col = column -3.1;
+                let level = heightLevel -0.5;
+                let deep = (-4*row) + 2;
+
                 const container = block.children.find(child => {
                     return child instanceof THREE.Mesh &&
-                        Math.abs(child.position.x - column) < 0.1 && // Columna ajustada
-                        Math.abs(child.position.y - heightLevel) < 0.1 && // Altura actual
-                        Math.abs(child.position.z - -4*row) < 0.1; // Fila ajustada
+                        Math.abs(child.position.x - col < 0.1)  && // Columna ajustada
+                        Math.abs(child.position.y - level) < 0.1 && // Altura actual
+                        Math.abs(child.position.z - deep) < 0.1 ; // Fila ajustada
                 });
-    
+                //console.log(container.position)
                 //console.log(`Buscando contenedor en: Bloque: ${blockKey}, Columna: ${column}, Fila: ${row}, Altura: ${heightLevel}`);
                 
                 // Si se encuentra el contenedor, cambiar su color
@@ -241,7 +264,7 @@ const ThreeDMap = () => {
                     container.material.needsUpdate = true; // Marcar el material como modificado
                     block.add(container);
                 } else {
-                    console.error(`No se encontró el contenedor para la clave: ${key} (bloque: ${blockKey}, columna: ${column}, fila: ${row}, altura: ${heightLevel})`);
+                    //console.error(`No se encontró el contenedor para la clave: ${key} (bloque: ${blockKey}, columna: ${column}, fila: ${row}, altura: ${heightLevel})`);
                 }
             }
             }
@@ -281,8 +304,35 @@ const ThreeDMap = () => {
             if (isContained) {
                 //console.log('Adding container at:', space.position);
                 const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-                const container = new THREE.Mesh(geometry, material);
-                container.position.copy(space.position);
+                const container = new THREE.Mesh(containerGeometry, material);
+
+                // Escalar la geometría
+                containerGeometry.computeBoundingBox();
+                const boundingBox = containerGeometry.boundingBox; // Accede al boundingBox}
+                const center = boundingBox.getCenter(new THREE.Vector3());
+                if (boundingBox) {
+                    const center = boundingBox.getCenter(new THREE.Vector3());
+                    const targetDimensions = { x: 1, y: 1, z: -4 }; // Dimensiones deseadas
+                    const scaleX = targetDimensions.x / (boundingBox.max.x - boundingBox.min.x);
+                    const scaleY = targetDimensions.y / (boundingBox.max.y - boundingBox.min.y);
+                    const scaleZ = targetDimensions.z / (boundingBox.max.z - boundingBox.min.z);
+                    // Aplicar la escala al modelo
+                    container.scale.set(scaleX, scaleY, scaleZ);
+                    // Ajustar la posición del contenedor
+                    container.position.set(
+                        space.position.x - 3.1 , // Usar directamente la posición del espacio
+                        space.position.y - 0.5, // Usar directamente la posición del espacio
+                        space.position.z + 2 // Usar directamente la posición del espacio
+                    );
+                
+                    //console.log(container.position)
+                } else {
+                    console.error('boundingBox no está definido');
+                }
+
+
+                // Ajustar la posición
+                //container.position.copy(space.position);
                 block.add(container);
                 
                 // Incrementar la altura de la columna
@@ -339,7 +389,7 @@ const ThreeDMap = () => {
 
 
             contenedoresOrdenados.forEach(contenedor => {
-            const { id, ubi, ubicacionParseada, visado} = contenedor;
+            const { id, ubi, ubicacionParseada, zona, visado} = contenedor;
             //console.log(ubicacionParseada)
             const { torre, z, x, y, original } = ubicacionParseada;
             //console.log(torre, z,x,y)
