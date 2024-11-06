@@ -2,19 +2,22 @@ import React, { useEffect, useState } from "react";
 import { BarraTorres } from "../components/BarraTorres/BarraTorres";
 import { ContenedorAvanzado } from "../components/ContenedorAvanzado/ContenedorAvanzado";
 import './MapaAvanzadoView.css'; // Importa el archivo CSS aquí
-import { parseLocation, filtrarContenedorPorId } from "./utils"; // Importa las funciones desde utils
+import { parseLocation, filtrarContenedorPorId } from "./utils"; // Importa las funciones desde utils ACA SE AGREGA LA FUNCION DE FILTRAR POR ID
+
 
 function MapaAvanzadoView() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [profundidadActual, setProfundidadActual] = useState(1);
     const [torreActual, setTorreActual] = useState('A'); // Nueva torre actual
-    const [contenedorId, setContenedorId] = useState(""); // Estado para el ID del contenedor
-    const [contenedorResaltado, setContenedorResaltado] = useState(""); // Estado para el contenedor resaltado
-    const [showModalAgregar, setShowModalAgregar] = useState(false); // Estado para modal de agregar
-    const [showModalQuitar, setShowModalQuitar] = useState(false); // Estado para modal de quitar
+    const [contenedorId, setContenedorId] = useState(""); // Estado para el ID del contenedor ESTO SE AGREGA
+    const [contenedorResaltado, setContenedorResaltado] = useState(""); // Estado para el contenedor resaltado ESTO SE AGREGA
+    const [showModalAgregar, setShowModalAgregar] = useState(false); //Estado para las funciones de mostrar y cerrar el modal de agregar
+    const [showModalQuitar, setShowModalQuitar] = useState(false);  //Estado para las funciones de mostrar y cerrar el modal de quitar
 
-    const torres = ['A', 'B', 'C', 'D', 'E', 'F', 'G']; // Torres extendidas
+
+    // Array con las torres extendidas
+    const torres = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
     useEffect(() => {
         fetch("http://localhost:5000/api/contenedores")
@@ -25,20 +28,10 @@ function MapaAvanzadoView() {
                 return response.json();
             })
             .then((data) => {
-                console.log("Datos originales obtenidos:", data); // Log de datos obtenidos
-
-                const parsedData = data.map((contenedor) => {
-                    const ubicacion = contenedor.Ubicación || "";
-                    const parsedUbicacion = parseLocation(ubicacion);
-                    
-                    console.log(`Contenedor ID: ${contenedor.Contenedor}, Ubicación: ${ubicacion}, Ubicación parseada:`, parsedUbicacion); // Log de cada contenedor y su ubicación
-                    return {
-                        ...contenedor,
-                        ubicacionParseada: parsedUbicacion
-                    };
-                });
-
-                console.log("Datos parseados:", parsedData); // Log de datos parseados
+                const parsedData = data.map((contenedor) => ({
+                    ...contenedor,
+                    ubicacionParseada: parseLocation(contenedor.ubicacion)
+                }));
                 setData(parsedData);
                 setLoading(false);
             })
@@ -48,22 +41,26 @@ function MapaAvanzadoView() {
             });
     }, []);
 
+    // Función para cambiar la torre
     const cambiarTorre = (nuevaTorre) => {
         setTorreActual(nuevaTorre);
-        setContenedorResaltado(""); // Limpiar resaltado al cambiar de torre
-        setContenedorId(""); // Limpiar ID del contenedor al cambiar de torre
+        setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA
+        setContenedorId(""); // Limpiar el ID del contenedor al cambiar de torre ESTO SE AGREGA
     };
 
+    // Función para cambiar la profundidad
     const cambiarProfundidad = (nuevaProfundidad) => {
         setProfundidadActual(nuevaProfundidad);
+
     };
 
+    // Función de filtrado TODA ESTA FUNCION
     const filtrarContenedor = () => {
         const contenedorEncontrado = filtrarContenedorPorId(data, contenedorId);
         if (contenedorEncontrado) {
             setTorreActual(contenedorEncontrado.ubicacionParseada.torre);
             setProfundidadActual(contenedorEncontrado.ubicacionParseada.z);
-            setContenedorResaltado(contenedorId); // Resaltar contenedor encontrado
+            setContenedorResaltado(contenedorId); // Establecer el contenedor resaltado
         } else {
             alert("Contenedor no encontrado");
         }
@@ -77,15 +74,18 @@ function MapaAvanzadoView() {
         return <div>No se encontraron contenedores.</div>;
     }
 
+    // Filtrar los contenedores que correspondan a la torre y profundidad actual
     const contenedoresFiltrados = data.filter(
         (contenedor) =>
             contenedor.ubicacionParseada.torre === torreActual &&
             contenedor.ubicacionParseada.z === profundidadActual
     );
 
+    // Crear la cuadrícula
     const gridSize = 5;
     const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(null));
 
+    // Asignar contenedores a la cuadrícula
     contenedoresFiltrados.forEach((contenedor) => {
         const { x, y } = contenedor.ubicacionParseada;
         if (x <= gridSize && y <= gridSize) {
@@ -93,158 +93,214 @@ function MapaAvanzadoView() {
         }
     });
 
+    // Función para cambiar la torre (avanzar)
     const avanzarTorre = () => {
         setTorreActual((prevTorre) => {
             const currentIndex = torres.indexOf(prevTorre);
-            return torres[(currentIndex + 1) % torres.length]; // Avanza entre las torres
+            return torres[(currentIndex + 1) % torres.length]; // Avanza en el array de torres
         });
-        setContenedorId(""); // Limpiar ID del contenedor al cambiar de torre
-        setContenedorResaltado(""); // Limpiar resaltado al cambiar de torre
+        setContenedorId(""); // Limpiar el ID del contenedor al cambiar de torre ESTO SE AGREGA
+        setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA
     };
 
+    // Función para cambiar la torre (retroceder)
     const retrocederTorre = () => {
         setTorreActual((prevTorre) => {
             const currentIndex = torres.indexOf(prevTorre);
-            return torres[(currentIndex - 1 + torres.length) % torres.length]; // Retrocede entre las torres
+            return torres[(currentIndex - 1 + torres.length) % torres.length]; // Retrocede en el array de torres
         });
-        setContenedorId(""); // Limpiar ID del contenedor al cambiar de torre
-        setContenedorResaltado(""); // Limpiar resaltado al cambiar de torre
+        setContenedorId(""); // Limpiar el ID del contenedor al cambiar de torre ESTO SE AGREGA
+        setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA        
     };
 
+    //Funciones para mostrar y cerrar modal de agregar
     const handleShowAgregar = () => setShowModalAgregar(true);
     const handleCloseAgregar = () => setShowModalAgregar(false);
+
+    //Funciones para mostrar y cerrar modal de quitar
     const handleShowQuitar = () => setShowModalQuitar(true);
     const handleCloseQuitar = () => setShowModalQuitar(false);
 
     return (
-        <div style={{ marginLeft: '95px' }}>
+        <div style={{marginLeft: '95px'}}>
             <h2>VISTA AVANZADA</h2>
-            <BarraTorres torreActual={torreActual} anteriorTorre={retrocederTorre} siguienteTorre={avanzarTorre} />
+            <BarraTorres torreActual={torreActual} anteriorTorre={retrocederTorre} siguienteTorre={avanzarTorre}/>
 
-            <div className="row">
-                <div className="col">
+                <div className="row">
+                    <div className="col">
+                    {/* Campo de búsqueda para el ID del contenedor ESTE ES EL BOTON DE FILTRADO CON EL TEXTFIELD */}
                     <div className="d-flex align-items-center">
-                        <h6 style={{ marginLeft: '10px', marginRight: '15px' }}>Buscar contenedor por ID:</h6>
-                        <input
-                            type="text"
-                            placeholder="Ingresa el ID del contenedor"
-                            value={contenedorId}
-                            onChange={(e) => setContenedorId(e.target.value)}
-                        />
-                        <button onClick={filtrarContenedor}>Buscar</button>
+                    <h6 style={{marginLeft:'10px',marginRight:'15px'}}>Buscar contenedor por ID:</h6>
+                    <input
+                        type="text"
+                        placeholder="Ingresa el ID del contenedor"
+                        value={contenedorId}
+                        onChange={(e) => setContenedorId(e.target.value)}
+                    />
+                    <button onClick={filtrarContenedor}>Buscar</button>
+                    </div>
+                    </div>
+                    <div className="col">
+                {/* BOTONES PARA AGREGAR Y QUITAR CONTENEDORES */}
+                {/* Botón para mostrar el modal de Agregar */}
+                <button type="button" className="btn btn-danger" onClick={handleShowAgregar}>
+                    ➕ Agregar contenedor
+                </button>                
+                {/* Modal de Agregar contenedor */}
+                {showModalAgregar && (
+                    <>
+                        <div className="modal show fade d-block" tabIndex="-1" style={{ display: 'block' }} role="dialog">
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h1 className="modal-title fs-5">Agregar contenedor</h1>
+                                        <button type="button" className="btn-close" onClick={handleCloseAgregar} aria-label="Close"></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        {/* Contenido del modal */}
+                                        <h6>ID</h6>
+                                        <input
+                                        type="text"
+                                        placeholder="Ingresa el ID del contenedor"                                    
+                                        />
+                                        <h6 style={{marginTop: '12px'}}>Ubicacion</h6>
+                                        <input
+                                        type="text"
+                                        placeholder="Ingresa el ID del contenedor"                                    
+                                        />
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-secondary" onClick={handleCloseAgregar}>
+                                            Cerrar
+                                        </button>
+                                        <button type="button" className="btn btn-success">
+                                            Agregar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/* Modal backdrop */}
+                        <div className="modal-backdrop fade show" onClick={handleCloseAgregar}></div>
+                    </>
+                )}
+                    </div>
+                    <div className="col">
+                    {/* Botón para mostrar el modal de Quitar */}
+                <button type="button" className="btn btn-danger" onClick={handleShowQuitar}>
+                    ➖ Quitar contenedor
+                </button>               
+                {/* Modal de Quitar contenedor */}
+                {showModalQuitar && (
+                    <>
+                        <div className="modal show fade d-block" tabIndex="-1" style={{ display: 'block' }} role="dialog">
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h1 className="modal-title fs-5">Quitar contenedor</h1>
+                                        <button type="button" className="btn-close" onClick={handleCloseQuitar} aria-label="Close"></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        {/* Contenido del modal */}
+                                        <h6>ID</h6>
+                                        <input
+                                        type="text"
+                                        placeholder="Ingresa el ID del contenedor"                                    
+                                        />
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-secondary" onClick={handleCloseQuitar}>
+                                            Cerrar
+                                        </button>
+                                        <button type="button" className="btn btn-danger">
+                                            Quitar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/* Modal backdrop */}
+                        <div className="modal-backdrop fade show" onClick={handleCloseQuitar}></div>
+                    </>
+                )}
+            
                     </div>
                 </div>
-                <div className="col">
-                    <button type="button" className="btn btn-danger" onClick={handleShowAgregar}>
-                        ➕ Agregar contenedor
-                    </button>
-                    {showModalAgregar && (
-                        <>
-                            <div className="modal show fade d-block" tabIndex="-1" role="dialog">
-                                <div className="modal-dialog">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h1 className="modal-title fs-5">Agregar contenedor</h1>
-                                            <button type="button" className="btn-close" onClick={handleCloseAgregar} aria-label="Close"></button>
-                                        </div>
-                                        <div className="modal-body">
-                                            <h6>ID</h6>
-                                            <input type="text" placeholder="Ingresa el ID del contenedor" />
-                                            <h6 style={{ marginTop: '12px' }}>Ubicacion</h6>
-                                            <input type="text" placeholder="Ingresa la ubicación del contenedor" />
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-secondary" onClick={handleCloseAgregar}>
-                                                Cerrar
-                                            </button>
-                                            <button type="button" className="btn btn-success">Agregar</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="modal-backdrop fade show" onClick={handleCloseAgregar}></div>
-                        </>
-                    )}
-                </div>
-                <div className="col">
-                    <button type="button" className="btn btn-danger" onClick={handleShowQuitar}>
-                        ➖ Quitar contenedor
-                    </button>
-                    {showModalQuitar && (
-                        <>
-                            <div className="modal show fade d-block" tabIndex="-1" role="dialog">
-                                <div className="modal-dialog">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h1 className="modal-title fs-5">Quitar contenedor</h1>
-                                            <button type="button" className="btn-close" onClick={handleCloseQuitar} aria-label="Close"></button>
-                                        </div>
-                                        <div className="modal-body">
-                                            <h6>ID</h6>
-                                            <input type="text" placeholder="Ingresa el ID del contenedor" />
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-secondary" onClick={handleCloseQuitar}>
-                                                Cerrar
-                                            </button>
-                                            <button type="button" className="btn btn-danger">Quitar</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="modal-backdrop fade show" onClick={handleCloseQuitar}></div>
-                        </>
-                    )}
-                </div>
-            </div>
 
+
+
+
+
+            {/* Cuadrícula 2D con el eje Y invertido */}
             <div className="row">
                 <div className="col-1">
-                    {[5, 4, 3, 2, 1].map((num) => (
-                        <h2 key={num}>{num}</h2>
-                    ))}
+                    <br /><h2>5</h2> <br /><br /><br />
+                    <h2>4</h2> <br /><br /><br />
+                    <h2>3</h2> <br /><br /><br />
+                    <h2>2</h2> <br /> <br /> <br />
+                    <h2>1</h2> 
                 </div>
                 <div className="col-10">
-                    <div className="grid-container">
-                        {grid.slice().reverse().map((row, rowIndex) => (
-                            <div key={rowIndex} className="grid-row">
-                                {row.map((contenedor, colIndex) => (
-                                    <div
-                                        key={colIndex}
-                                        className={`grid-cell ${
-                                            contenedor && contenedor._id === contenedorResaltado ? "resaltado" : ""
-                                        }`}
-                                    >
-                                        {contenedor ? (
-                                            <ContenedorAvanzado contenedor={contenedor} />
-                                        ) : (
-                                            <div className="grid-cell-placeholder"></div>
-                                        )}
-                                    </div>
-                                ))}
+                <div className="grid-container">
+                {grid.slice().reverse().map((fila, filaIndex) => (
+                    <div key={filaIndex} className="grid-row">
+                        {fila.map((contenedor, colIndex) => {
+                            const isHighlighted = contenedor && contenedor.contenedor === contenedorResaltado; // Comprobar si es el contenedor resaltado DESDE ACA
+                            return (
+                                <div
+                                    key={colIndex}
+                                    className={`grid-cell ${isHighlighted ? "highlight" : ""}`} // Aplicar clase 'highlight' si es el contenedor buscado HASTA ACA
+                                >
+                                    {contenedor ? (
+                                        <>
+                                            <div>ID: {contenedor.contenedor}</div>
+                                            <div>Ubicación: {contenedor.ubicacionParseada.ubicacionOriginal}</div>
+                                        </>
+                                    ) : (
+                                        "Vacío"
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                ))}
+            </div>
+                    {/* Fila con numeros abajo */}
+                    <div className="row">
+                        <div className="col text-center">
+                            <h2>1</h2>
+                        </div>
+                        <div className="col text-center">
+                            <h2>2</h2>
+                        </div>
+                        <div className="col text-center">
+                            <h2>3</h2>
+                        </div>
+                        <div className="col text-center">
+                            <h2>4</h2>
+                        </div>
+                        <div className="col text-center">
+                            <h2>5</h2>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-1" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                    <div>
+                        {[1, 2, 3].map((nivel) => (
+                            <div className="row" key={nivel}>
+                                <button 
+                                    type="button" 
+                                    className={`btn boton-profundidad ${profundidadActual === nivel ? 'boton-seleccionado' : 'boton-no-seleccionado'}`}
+                                    onClick={() => cambiarProfundidad(nivel)}
+                                >
+                                    {nivel}
+                                </button>
                             </div>
                         ))}
                     </div>
                 </div>
-                <div className="col-1">
-                    {[5, 4, 3, 2, 1].map((num) => (
-                        <h2 key={num}>{num}</h2>
-                    ))}
-                </div>
             </div>
-
-            <div className="row justify-content-center">
-                {[1, 2, 3].map((num) => (
-                    <button
-                        key={num}
-                        type="button"
-                        className={`btn btn-${num === profundidadActual ? "primary" : "secondary"} mx-2`}
-                        onClick={() => cambiarProfundidad(num)}
-                    >
-                        {num}
-                    </button>
-                ))}
-            </div>
+        
         </div>
     );
 }
