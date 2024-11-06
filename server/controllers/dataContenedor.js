@@ -18,22 +18,24 @@ const getContenedores = async (req, res) => {
 };
 
 const addContenedor = async (req, res) => {
-    const { contenedor, ubicacion } = req.body;
-  
-    try {
-      const nuevaUbicacion = new Ubicacion({
-        Contenedor: contenedor,
-        Ubicacion: ubicacion,
-        Zona: '',
-        Visado: '',
-      });
-  
-      await nuevaUbicacion.save(); // Guarda la nueva ubicación en MongoDB
-      res.status(201).json({ message: 'Contenedor agregado a MongoDB' });
-    } catch (error) {
-      res.status(500).json({ error: 'Error al agregar el contenedor en MongoDB' });
-    }
-  };
+  const { contenedor, ubicacion, zona = '', visado = false } = req.body; // Extrae los datos del body, con valores por defecto
+
+  try {
+    const nuevaUbicacion = new Ubicacion({
+      Contenedor: contenedor, 
+      Ubicación: ubicacion,
+      Zona: zona,
+      Visado: visado
+    });
+
+    const savedUbicacion = await nuevaUbicacion.save(); // Guarda en la base de datos
+    console.log(savedUbicacion); // Verifica que los datos se hayan guardado correctamente
+    res.status(201).json({ message: 'Contenedor agregado a MongoDB', data: savedUbicacion });
+  } catch (error) {
+    console.error("Error al guardar en MongoDB:", error); // Log para diagnosticar el error
+    res.status(500).json({ error: 'Error al agregar el contenedor en MongoDB' });
+  }
+};
   
 
   const removeContenedor = async (req, res) => {

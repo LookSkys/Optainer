@@ -14,6 +14,9 @@ function MapaAvanzadoView() {
     const [contenedorResaltado, setContenedorResaltado] = useState(""); // Estado para el contenedor resaltado ESTO SE AGREGA
     const [showModalAgregar, setShowModalAgregar] = useState(false); //Estado para las funciones de mostrar y cerrar el modal de agregar
     const [showModalQuitar, setShowModalQuitar] = useState(false);  //Estado para las funciones de mostrar y cerrar el modal de quitar
+    // Estado para almacenar los valores de los dos inputs
+    const [inputValue1, setInputValue1] = useState('');
+    const [inputValue2, setInputValue2] = useState('');
 
 
     // Array con las torres extendidas
@@ -121,6 +124,52 @@ function MapaAvanzadoView() {
     const handleShowQuitar = () => setShowModalQuitar(true);
     const handleCloseQuitar = () => setShowModalQuitar(false);
 
+    //Funciones para el cambio del texto de los inputs del modal de AGREGAR CONTENEDOR
+        // Función para manejar el cambio en el primer input
+        const handleInputChange1 = (event) => {
+            setInputValue1(event.target.value);
+        };
+
+        // Función para manejar el cambio en el segundo input
+        const handleInputChange2 = (event) => {
+            setInputValue2(event.target.value);
+        };
+
+    //FUNCIONES PARA AGREGAR Y QUITAR CONTENEDORES DE LA BD
+    //AGREGAR
+    const handleAgregarContenedor = (event) => {
+        event.preventDefault();
+        const nuevoContenedor = {
+            contenedor: inputValue1,
+            ubicacion: inputValue2
+        };
+        fetch("http://localhost:5000/api/contenedores", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(nuevoContenedor)
+        })
+            .then(response => response.json())
+            .then(data => {
+                setData([...data, nuevoContenedor]); // Actualiza el estado de datos con el nuevo contenedor
+                setShowModalAgregar(false);
+            })
+            .catch(error => console.error("Error agregando contenedor:", error));
+    };
+
+    //QUITAR
+    // const handleQuitarContenedor = () => {
+    //     fetch(`http://localhost:5000/api/contenedores/${contenedorId}`, {
+    //         method: "DELETE"
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             setData(data.filter(c => c.id !== contenedorId)); // Actualiza el estado quitando el contenedor
+    //             setShowModalQuitar(false);
+    //         })
+    //         .catch(error => console.error("Error quitando contenedor:", error));
+    // };
+    
+
     return (
         <div style={{marginLeft: '95px'}}>
             <h2>INVENTARIO AVANZADO</h2>
@@ -187,18 +236,31 @@ function MapaAvanzadoView() {
                             <button type="button" className="btn-close" onClick={handleCloseAgregar} aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <h6>ID</h6>
-                            <input type="text" placeholder="Ingresa el ID del contenedor" />
-                            <h6 style={{ marginTop: '12px' }}>Ubicación</h6>
-                            <input type="text" placeholder="Ingresa la ubicación del contenedor" />
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" onClick={handleCloseAgregar}>
-                                Cerrar
-                            </button>
-                            <button type="button" className="btn btn-success">
-                                Agregar
-                            </button>
+                            <form onSubmit={handleAgregarContenedor}>
+                                <div className="mb-3">
+                                <label htmlFor="inputData1" className="form-label">ID:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="inputData1"
+                                    value={inputValue1}
+                                    onChange={handleInputChange1}
+                                    required
+                                />
+                                </div>
+                                <div className="mb-3">
+                                <label htmlFor="inputData2" className="form-label">Ubicacion:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="inputData2"
+                                    value={inputValue2}
+                                    onChange={handleInputChange2}
+                                    required
+                                />
+                                </div>
+                                <button type="submit" className="btn btn-success">Agregar</button>
+                            </form>
                         </div>
                     </div>
                 </div>

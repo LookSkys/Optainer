@@ -5,7 +5,7 @@ const ubicacionSchema = new mongoose.Schema({
     Contenedor: String,
     Ubicación: String,
     Zona: String,
-    Visado: String,
+    Visado: Boolean,
 });
 
 module.exports = mongoose.model('Ubicacion', ubicacionSchema);
