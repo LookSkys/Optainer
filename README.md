@@ -73,7 +73,7 @@ npm install
 #### Iniciar la aplicación cliente:
 
 ```bash
-npm start
+npm run dev
 ```
 La aplicación se ejecutará en http://localhost:3000.
 
