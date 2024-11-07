@@ -1,4 +1,4 @@
-import Login from '../components/Login/Login'; // Importa el componente Login
+import{ Login }from '../components/Login/Login'; // Importa el componente Login
 
 function LoginView() {
   return (
