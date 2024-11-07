@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import io from 'socket.io-client'; // Importa socket.io-client
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import LoginView from './views/LoginView';
 import Home from './views/Home';
@@ -7,13 +9,32 @@ import SideBarLateral from './components/SideBarLateral/SideBarLateral'
 import './App.css';
 
 function App() {
+  const [socket, setSocket] = useState(null);
+
+    useEffect(() => {
+        // Establecer conexión con el servidor de WebSockets
+        const socketConnection = io('http://localhost:5000'); // Asegúrate de que la URL sea correcta según tu configuración del servidor
+
+        socketConnection.on('connect', () => {
+          console.log('Conexión exitosa a WebSocket!');
+        });
+        
+        setSocket(socketConnection);
+
+        // Limpiar la conexión cuando el componente se desmonte
+        return () => {
+            socketConnection.disconnect();
+            console.log('Desconectado del WebSocket');
+        };
+    }, []);
+
   return (
     <Router>
       <NavbarController />
       <Routes>
         <Route path="/" element={<LoginView />} />
         <Route path="/home" element={<Home />} />
-        <Route path='/avanzado' element={<MapaAvanzadoView/>} />
+        <Route path='/avanzado' element={<MapaAvanzadoView socket={socket} />} />
         <Route path='/metricas' element={<MetricasView/>} />
       </Routes>
     </Router>

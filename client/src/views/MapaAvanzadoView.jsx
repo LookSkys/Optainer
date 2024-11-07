@@ -4,8 +4,7 @@ import './MapaAvanzadoView.css'; // Importa el archivo CSS aquí
 import { parseLocation, filtrarContenedorPorId } from "./utils"; // Importa las funciones desde utils ACA SE AGREGA LA FUNCION DE FILTRAR POR ID
 import { FaSearch, FaPlus, FaTruckMoving } from "react-icons/fa";
 
-
-function MapaAvanzadoView() {
+function MapaAvanzadoView({socket}) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [profundidadActual, setProfundidadActual] = useState(1);
@@ -44,6 +43,26 @@ function MapaAvanzadoView() {
                 setLoading(false);
             });
     }, []);
+
+    useEffect(() => {
+        if (socket) {
+          // Nos suscribimos al evento 'contenedorActualizado' emitido por el servidor
+          socket.on('contenedorActualizado', (data) => {
+            // Maneja el evento aquí
+            console.log(data);
+            // En este punto puedes actualizar el estado o la vista
+            // dependiendo de los datos que recibas del servidor
+          });
+        }
+      
+        // Limpiar la suscripción cuando el componente se desmonte
+        return () => {
+          if (socket) {
+            socket.off('contenedorActualizado'); // Des-suscribir para evitar fugas de memoria
+          }
+        };
+      }, [socket]);
+      
 
     // Función para cambiar la torre
     // const cambiarTorre = (nuevaTorre) => {
