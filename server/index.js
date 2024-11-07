@@ -17,7 +17,12 @@ mongoose.connect(process.env.DB_CONNECTION)
   })
   .catch(console.log);
 
-app.use(cors());
+const corsOptions = {
+    origin: ['https://optainerback.vercel.app', 'http://localhost:3000'], // Reemplaza con tu URL de Vercel
+    optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
