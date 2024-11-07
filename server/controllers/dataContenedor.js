@@ -38,16 +38,22 @@ const addContenedor = async (req, res) => {
 };
   
 
-  const removeContenedor = async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      await Ubicacion.findByIdAndDelete(id); // Elimina la ubicación por ID
+const removeContenedor = async (req, res) => {
+  const { id } = req.params; // este es el valor del campo "Contenedor"
+
+  try {
+      const deletedUbicacion = await Ubicacion.findOneAndDelete({ Contenedor: id }); // Busca y elimina por "Contenedor"
+      
+      if (!deletedUbicacion) {
+          return res.status(404).json({ message: 'Contenedor no encontrado' });
+      }
+
       res.json({ message: 'Contenedor eliminado de MongoDB' });
-    } catch (error) {
+  } catch (error) {
+      console.error("Error al eliminar en MongoDB:", error);
       res.status(500).json({ error: 'Error al eliminar el contenedor en MongoDB' });
-    }
-  };
+  }
+};
   
 
 module.exports = {
