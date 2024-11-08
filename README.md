@@ -96,10 +96,5 @@ optainer/
 │   ├── routes/          # Rutas de la API
 │   ├── utils/           # Utilidades y middleware
 │   └── index.js         # Punto de entrada del servidor
-├── threejs/             # Archivos relacionados con Three.js para la visualización 3D
-│   ├── scenes/          # Escenas 3D
-│   ├── objects/         # Modelos y objetos 3D
-│   ├── controls/        # Controles de la cámara y la escena
-│   └── renderer.js      # Configuración del renderizador Three.js
 ├── .gitignore
 └──  README.md
