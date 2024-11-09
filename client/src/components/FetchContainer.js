@@ -3,7 +3,7 @@ import { parseLocation } from "../views/utils";
 export async function fetchContenedores() {
     try {
         // Realizamos la solicitud a la API
-        const response = await fetch("https://optainerback.vercel.app/api/contenedores");
+        const response = await fetch("https://optainer.railway.internal/api/contenedores");
 
         // Verificamos que la respuesta sea exitosa
         if (!response.ok) {
