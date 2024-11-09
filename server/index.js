@@ -17,12 +17,12 @@ mongoose.connect(process.env.DB_CONNECTION)
   })
   .catch(console.log);
 
-const corsOptions = {
-    origin: ['https://optainerfront.vercel.app/', 'http://192.168.100.11:5173'], // Reemplaza con tu URL de Vercel
-    optionsSuccessStatus: 200,
-};
+// const corsOptions = {
+//     origin: ['https://optainerfront.vercel.app', 'http://192.168.100.11:5173'],
+//     optionsSuccessStatus: 200,
+// };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
