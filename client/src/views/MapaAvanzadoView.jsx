@@ -23,7 +23,7 @@ function MapaAvanzadoView() {
     const torres = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
     useEffect(() => {
-        fetch("https://optainerback.vercel.app/api/contenedores")
+        fetch("https://optainer.railway.internal/api/contenedores")
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -143,7 +143,7 @@ function MapaAvanzadoView() {
             contenedor: inputValue1,
             ubicacion: inputValue2
         };
-        fetch("https://optainerback.vercel.app/api/contenedores", {
+        fetch("https://optainer.railway.internal/api/contenedores", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(nuevoContenedor)
