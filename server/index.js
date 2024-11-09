@@ -18,7 +18,7 @@ mongoose.connect(process.env.DB_CONNECTION)
   .catch(console.log);
 
 const corsOptions = {
-    origin: ['https://optainer.railway.internal'],
+    origin: '*',
     optionsSuccessStatus: 200,
 };
 
