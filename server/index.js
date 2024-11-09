@@ -18,7 +18,7 @@ mongoose.connect(process.env.DB_CONNECTION)
   .catch(console.log);
 
 // const corsOptions = {
-//     origin: ['https://optainerfront.vercel.app', 'http://192.168.100.11:5173'],
+//     origin: ['https://optainerfront.vercel.app'],
 //     optionsSuccessStatus: 200,
 // };
 

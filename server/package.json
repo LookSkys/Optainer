@@ -4,7 +4,7 @@
   "description": "Solución web para la gestión y organización de contenedores en almacenes extraportuarios, con visualización 3D.",
   "main": "server/index.js",
   "scripts": {
-    "start": "node ./index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
