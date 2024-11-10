@@ -3,6 +3,7 @@ import { BarraTorres } from "../components/BarraTorres/BarraTorres";
 import './MapaAvanzadoView.css'; // Importa el archivo CSS aquí
 import { parseLocation, filtrarContenedorPorId } from "./utils"; // Importa las funciones desde utils ACA SE AGREGA LA FUNCION DE FILTRAR POR ID
 import { FaSearch, FaPlus, FaTruckMoving } from "react-icons/fa";
+import {Toaster, toast} from 'react-hot-toast'
 
 function MapaAvanzadoView({socket}) {
     const [data, setData] = useState(null);
@@ -161,7 +162,11 @@ function MapaAvanzadoView({socket}) {
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger mt-5" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>;
     }
 
     if (!data || data.length === 0) {
@@ -169,11 +174,13 @@ function MapaAvanzadoView({socket}) {
     }
 
     // Filtrar los contenedores que correspondan a la torre y profundidad actual
-    const contenedoresFiltrados = data.filter(
-        (contenedor) =>
-            contenedor.ubicacionParseada.torre === torreActual &&
-            contenedor.ubicacionParseada.z === profundidadActual
-    );
+    const contenedoresFiltrados = data.filter((contenedor) => {
+        if (contenedor.ubicacionParseada) {
+            return contenedor.ubicacionParseada.torre === torreActual &&
+                contenedor.ubicacionParseada.z === profundidadActual;
+        }
+        return false;
+    });
 
     // Crear la cuadrícula
     const gridSize = 5;
@@ -253,15 +260,26 @@ function MapaAvanzadoView({socket}) {
             
         })
         .then(response => {
-            console.log("Respuesta del servidor:", response);
+            if (!response.ok) {
+                throw new Error('Error al agregar contenedor');
+            }
             return response.json();
         })
         .then(data => {
-            console.log("Datos recibidos del servidor:", data);
-            setData([...data, nuevoContenedor]); // Actualiza el estado de datos con el nuevo contenedor
-            console.log("Estado actualizado con el nuevo contenedor:", data);
-            handleCloseAgregar(true);
-            console.log("Contenedor agregado exitosamente:", nuevoContenedor); // Log del contenedor agregado
+            setData(prevData => [...prevData, data]); // Usamos prevData para evitar un posible error de estado
+            setInputValue1("");
+            setInputValue2("");
+            handleCloseAgregar(); // Cierra el modal después de actualizar
+            //Toast con mensaje de exito 
+            toast.success('Contenedor agregado correctamente', {
+                duration: 4000,
+                position: 'bottom-right',
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                  },
+              });
         })
         .catch(error => {
             console.error("Error agregando contenedor:", error); // Log del error
@@ -277,15 +295,31 @@ function MapaAvanzadoView({socket}) {
         fetch(`http://localhost:5000/api/contenedores/${inputValue3}`, {
             method: "DELETE"
         })
-            .then(response => response.json())
-            .then(data => {
-                setData(data.filter(c => c.id !== inputValue3)); // Actualiza el estado quitando el contenedor
-                setShowModalQuitar(false);
-                console.log("Contenedor eliminado exitosamente con ID:", inputValue3); // Log del contenedor eliminado
-            })
-            .catch(error => {
-                console.error("Error quitando contenedor:", error); // Log del error
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al eliminar contenedor');
+            }
+            return response.json();
+        })
+        .then(() => {
+            // Filtramos el contenedor eliminado de los datos que tenemos en el estado
+            setData(prevData => prevData.filter(contenedor => contenedor.id !== contenedorId));
+            setInputValue3("");
+            handleCloseQuitar(); // Cierra el modal después de eliminar
+            //Toast con mensaje de exito 
+            toast('Contenedor eliminado correctamente', {
+                duration: 4000,
+                position: 'bottom-right',
+                // Custom Icon
+                icon: '🗑️',
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                  },
+              });
+        })
+        .catch(error => console.error("Error eliminando contenedor:", error));
     };
     
     
@@ -495,7 +529,7 @@ function MapaAvanzadoView({socket}) {
                     </div>
                 </div>
             </div>
-        
+            <Toaster />
         </div>
     );
 }
