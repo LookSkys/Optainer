@@ -292,7 +292,7 @@ function MapaAvanzadoView({socket}) {
         event.preventDefault();
         console.log("Intentando quitar contenedor con ID:", inputValue3); // Log antes de la solicitud
     
-        fetch(`http://localhost:5000/api/contenedores/${inputValue3}`, {
+        fetch(`http://backend-production-d707.up.railway.app/api/contenedores/${inputValue3}`, {
             method: "DELETE"
         })
         .then(response => {
