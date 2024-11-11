@@ -13,7 +13,7 @@ function App() {
 
     useEffect(() => {
         // Establecer conexión con el servidor de WebSockets
-        const socketConnection = io('http://localhost:5000'); // Asegúrate de que la URL sea correcta según tu configuración del servidor
+        const socketConnection = io('http://backend-production-d707.up.railway.app'); 
 
         socketConnection.on('connect', () => {
           console.log('Conexión exitosa a WebSocket!');
