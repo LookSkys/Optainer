@@ -278,8 +278,8 @@ function MapaAvanzadoView({socket}) {
                     borderRadius: '10px',
                     background: '#333',
                     color: '#fff',
-                  },
-              });
+                },
+            });
         })
         .catch(error => {
             console.error("Error agregando contenedor:", error); // Log del error
@@ -292,7 +292,7 @@ function MapaAvanzadoView({socket}) {
         event.preventDefault();
         console.log("Intentando quitar contenedor con ID:", inputValue3); // Log antes de la solicitud
     
-        fetch('https://backend-production-d707.up.railway.app/api/contenedores/${inputValue3}', {
+        fetch(`https://backend-production-d707.up.railway.app/api/contenedores/${inputValue3}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -316,8 +316,8 @@ function MapaAvanzadoView({socket}) {
                     borderRadius: '10px',
                     background: '#333',
                     color: '#fff',
-                  },
-              });
+                },
+            });
         })
         .catch(error => console.error("Error eliminando contenedor:", error));
     };
