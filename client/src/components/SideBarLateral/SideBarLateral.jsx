@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { FaSignOutAlt, FaBars } from 'react-icons/fa';
-import { FaHouse, FaBox, FaWrench, FaClipboardCheck, FaFileInvoiceDollar } from 'react-icons/fa6';
+import { FaSignOutAlt, FaBars, FaTasks } from 'react-icons/fa';
+import { FaHouse, FaBox } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 import './SideBarLateral.css';
 
@@ -57,26 +57,15 @@ function SideBarLateral() {
             <div className="icon-wrapper">
               <button
                 className="icon-button"
-                onClick={() => navigate('/metricas')}
-                onMouseEnter={() => handleMouseEnter('Métricas')}
+                onClick={() => navigate('/tareas')}
+                onMouseEnter={() => handleMouseEnter('Tareas')}
                 onMouseLeave={handleMouseLeave}
               >
-                <FaFileInvoiceDollar />
+                <FaTasks />
               </button>
-              {hoveredButton === 'Métricas' && <div className="label">Métricas</div>}
+              {hoveredButton === 'Tareas' && <div className="label">Tareas</div>}
             </div>           
 
-            <div className="icon-wrapper">
-              <button
-                className="icon-button"
-                onClick={() => navigate('/Configuracion')}
-                onMouseEnter={() => handleMouseEnter('Configuracion')}
-                onMouseLeave={handleMouseLeave}
-              >
-                <FaWrench />
-              </button>
-              {hoveredButton === 'Configuracion' && <div className="label">Configuracion</div>}
-            </div>
           </div>
 
           

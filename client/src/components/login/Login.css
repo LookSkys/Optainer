@@ -113,6 +113,8 @@ input::placeholder {
   opacity: 0.5; /* Asegura que el color no se vea atenuado */
 }
 
+
+
 .login-box button {
   font-family: 'Exo 2', sans-serif;
   font-size: 15px;

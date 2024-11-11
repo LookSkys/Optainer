@@ -3,7 +3,7 @@ import { parseLocation } from "../views/utils";
 export async function fetchContenedores() {
     try {
         // Realizamos la solicitud a la API
-        const response = await fetch("http://localhost:5000/api/contenedores");
+        const response = await fetch("https://backend-production-d707.up.railway.app/api/contenedores");
 
         // Verificamos que la respuesta sea exitosa
         if (!response.ok) {
