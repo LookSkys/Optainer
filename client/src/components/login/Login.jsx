@@ -20,10 +20,10 @@ function Login() {
           <p>Bienvenido a la plataforma de gestión del patio de contenedores!!</p>
           <form onSubmit={handleLogin}>
             <label htmlFor="username">Nombre de Usuario:</label>
-            <input type="text" id="username" name="username" placeholder="Ingrese su usuario" />
+            <input type="text" id="username" name="username" placeholder="Ingrese su usuario" style={{ color: 'white' }}/>
 
             <label htmlFor="password">Contraseña:</label>
-            <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" />
+            <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" style={{ color: 'white' }}/>
 
             <div className="forgot-password">
               <a href="/forgot-password">¿Olvidó su contraseña?</a>

@@ -5,6 +5,7 @@ import LoginView from './views/LoginView';
 import Home from './views/Home';
 import MapaAvanzadoView  from './views/MapaAvanzadoView'
 import MetricasView from './views/MetricasView'
+import TareasView from './views/TareasView';
 import SideBarLateral from './components/SideBarLateral/SideBarLateral'
 import './App.css';
 
@@ -35,7 +36,7 @@ function App() {
         <Route path="/" element={<LoginView />} />
         <Route path="/home" element={<Home />} />
         <Route path='/avanzado' element={<MapaAvanzadoView socket={socket} />} />
-        <Route path='/metricas' element={<MetricasView/>} />
+        <Route path='/tareas' element={<TareasView/>} />
       </Routes>
     </Router>
   );
