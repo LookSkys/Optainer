@@ -399,14 +399,14 @@ const ThreeDMap = () => {
                     const blockIndex = torres[torre];
                     updateContainer(blockGroup[blockIndex], { x: x, y: y, z: z }, true);
                     updateColorsInColumn(blockGroup[blockIndex])
-                  }
+                    }
             }
-          });
+            });
         } catch (error) {
-          console.error("Error al cargar los contenedores: ", error);
+            console.error("Error al cargar los contenedores: ", error);
         }
-      }
-  
+        }
+
     // Llamar a la función al montar el componente
     loadContenedores();
 

@@ -24,7 +24,7 @@ function MapaAvanzadoView({socket}) {
     const torres = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/contenedores")
+        fetch("https://backend-production-d707.up.railway.app/api/contenedores")
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -253,7 +253,7 @@ function MapaAvanzadoView({socket}) {
         
         console.log("Intentando agregar contenedor:", nuevoContenedor); // Log antes de hacer la solicitud
         console.log("Ubicación del contenedor a agregar:", nuevoContenedor.ubicacion);
-        fetch("http://localhost:5000/api/contenedores", {
+        fetch("https://backend-production-d707.up.railway.app/api/contenedores", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(nuevoContenedor)
@@ -278,8 +278,8 @@ function MapaAvanzadoView({socket}) {
                     borderRadius: '10px',
                     background: '#333',
                     color: '#fff',
-                  },
-              });
+                },
+            });
         })
         .catch(error => {
             console.error("Error agregando contenedor:", error); // Log del error
@@ -292,7 +292,7 @@ function MapaAvanzadoView({socket}) {
         event.preventDefault();
         console.log("Intentando quitar contenedor con ID:", inputValue3); // Log antes de la solicitud
     
-        fetch(`http://localhost:5000/api/contenedores/${inputValue3}`, {
+        fetch(`https://backend-production-d707.up.railway.app/api/contenedores/${inputValue3}`, {
             method: "DELETE"
         })
         .then(response => {
@@ -316,8 +316,8 @@ function MapaAvanzadoView({socket}) {
                     borderRadius: '10px',
                     background: '#333',
                     color: '#fff',
-                  },
-              });
+                },
+            });
         })
         .catch(error => console.error("Error eliminando contenedor:", error));
     };

@@ -5,6 +5,7 @@ import LoginView from './views/LoginView';
 import Home from './views/Home';
 import MapaAvanzadoView  from './views/MapaAvanzadoView'
 import MetricasView from './views/MetricasView'
+import TareasView from './views/TareasView';
 import SideBarLateral from './components/SideBarLateral/SideBarLateral'
 import './App.css';
 
@@ -13,7 +14,7 @@ function App() {
 
     useEffect(() => {
         // Establecer conexión con el servidor de WebSockets
-        const socketConnection = io('http://localhost:5000'); // Asegúrate de que la URL sea correcta según tu configuración del servidor
+        const socketConnection = io('https://backend-production-d707.up.railway.app'); 
 
         socketConnection.on('connect', () => {
           console.log('Conexión exitosa a WebSocket!');
@@ -35,7 +36,7 @@ function App() {
         <Route path="/" element={<LoginView />} />
         <Route path="/home" element={<Home />} />
         <Route path='/avanzado' element={<MapaAvanzadoView socket={socket} />} />
-        <Route path='/metricas' element={<MetricasView/>} />
+        <Route path='/tareas' element={<TareasView/>} />
       </Routes>
     </Router>
   );
