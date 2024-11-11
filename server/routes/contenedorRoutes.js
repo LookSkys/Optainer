@@ -4,9 +4,11 @@ const { getContenedores, addContenedor, removeContenedor } = require('../control
 
 const router = express.Router();
 
-// Definir el endpoint de la API
-router.get('/contenedores', getContenedores);
-router.post('/contenedores', addContenedor);  // Nueva ruta para agregar contenedor
-router.delete('/contenedores/:id', removeContenedor);  // Nueva ruta para eliminar contenedor
-
-module.exports = router;
+module.exports = (io) => {
+    // Pasamos `io` a los controladores para que puedan emitir eventos
+    router.get('/contenedores', getContenedores);
+    router.post('/contenedores', (req, res) => addContenedor(req, res, io));  // Pasar `io` al controlador de agregar
+    router.delete('/contenedores/:id', (req, res) => removeContenedor(req, res, io));  // Pasar `io` al controlador de eliminar
+    
+    return router;
+  };

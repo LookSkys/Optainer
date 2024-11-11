@@ -34,6 +34,7 @@
     "mongodb": "^6.10.0",
     "mongoose": "^8.6.0",
     "optainer": "file:",
+    "socket.io": "^4.8.1",
     "xlsx": "^0.18.5"
   }
 }

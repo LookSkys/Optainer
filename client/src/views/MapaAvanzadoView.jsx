@@ -3,9 +3,9 @@ import { BarraTorres } from "../components/BarraTorres/BarraTorres";
 import './MapaAvanzadoView.css'; // Importa el archivo CSS aquí
 import { parseLocation, filtrarContenedorPorId } from "./utils"; // Importa las funciones desde utils ACA SE AGREGA LA FUNCION DE FILTRAR POR ID
 import { FaSearch, FaPlus, FaTruckMoving } from "react-icons/fa";
+import {Toaster, toast} from 'react-hot-toast'
 
-
-function MapaAvanzadoView() {
+function MapaAvanzadoView({socket}) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [profundidadActual, setProfundidadActual] = useState(1);
@@ -32,18 +32,107 @@ function MapaAvanzadoView() {
                 return response.json();
             })
             .then((data) => {
-                const parsedData = data.map((contenedor) => ({
-                    ...contenedor,
-                    ubicacionParseada: parseLocation(contenedor.ubicacion)
-                }));
+                const parsedData = data.map((contenedor) => {
+                    console.log("Ubicación de contenedor antes de parsear:", contenedor.ubicacion);
+                    const ubicacionParseada = parseLocation(contenedor.ubicacion);
+                    if (!ubicacionParseada) {
+                        console.warn("Ubicación no parseada para contenedor:", contenedor);
+                        return null;  // Manejo de valor nulo
+                    }
+                    return {
+                        ...contenedor,
+                        ubicacionParseada
+                    };
+                }).filter(Boolean); // Filtra valores nulos
                 setData(parsedData);
                 setLoading(false);
+                console.log("Datos de contenedores obtenidos:", parsedData);
             })
             .catch((error) => {
                 console.error("Error fetching contenedores:", error);
                 setLoading(false);
             });
     }, []);
+    
+    
+
+    useEffect(() => {
+        if (socket) {
+            socket.on('contenedorActualizado', (nuevoContenedor) => {
+                console.log("Contenedor actualizado recibido:", nuevoContenedor);
+                
+                if (nuevoContenedor.tipo === "eliminar") {
+                    const idEliminar = nuevoContenedor.id;
+                    console.log("ID del contenedor a eliminar:", idEliminar);
+    
+                    setData((dataActual) => {
+                        return dataActual.filter(c => c.contenedor !== idEliminar);
+                    });
+                    console.log("Contenedor eliminado con ID:", idEliminar);
+                    return;
+                }
+
+
+                // Acceder al objeto interno dentro de `nuevoContenedor`
+                const { Contenedor, Ubicación, Zona, Visado, _id } = nuevoContenedor.contenedor || {};
+    
+                // Crear el objeto normalizado
+                const contenedorNormalizado = {
+                    contenedor: Contenedor,
+                    ubicacion: Ubicación,
+                    zona: Zona,
+                    visado: Visado,
+                    _id: _id,
+                };
+    
+                console.log("Contenedor después de normalización:", contenedorNormalizado);
+                console.log("Ubicación recibida para parseo Socket:", contenedorNormalizado.ubicacion);
+    
+                // Validar si `ubicacion` está definido
+                if (!contenedorNormalizado.ubicacion) {
+                    console.warn("Ubicación no definida después de la normalización. No se puede parsear.");
+                    return;
+                }
+    
+                const ubicacionParseada = parseLocation(contenedorNormalizado.ubicacion);
+                if (!ubicacionParseada) {
+                    console.warn("Ubicación inválida para contenedor:", contenedorNormalizado);
+                    return;
+                }
+    
+                setData((dataActual) => {
+                    const index = dataActual.findIndex(c => c.contenedor === contenedorNormalizado.contenedor);
+    
+                    if (index >= 0) {
+                        // Si el contenedor existe, actualiza su ubicación
+                        const nuevaData = [...dataActual];
+                        nuevaData[index] = {
+                            ...contenedorNormalizado,
+                            ubicacionParseada
+                        };
+                        return nuevaData;
+                    } else {
+                        // Si es un nuevo contenedor, agrégalo
+                        return [...dataActual, {
+                            ...contenedorNormalizado,
+                            ubicacionParseada
+                        }];
+                    }
+                });
+            });
+        }
+        return () => {
+            if (socket) {
+                socket.off('contenedorActualizado');
+            }
+        };
+    }, [socket]);
+    
+    
+    
+    
+    
+      
 
     // Función para cambiar la torre
     // const cambiarTorre = (nuevaTorre) => {
@@ -65,13 +154,19 @@ function MapaAvanzadoView() {
             setTorreActual(contenedorEncontrado.ubicacionParseada.torre);
             setProfundidadActual(contenedorEncontrado.ubicacionParseada.z);
             setContenedorResaltado(contenedorId); // Establecer el contenedor resaltado
+            console.log("Contenedor encontrado:", contenedorEncontrado); // Log del contenedor encontrado
         } else {
             alert("Contenedor no encontrado");
+            console.warn("Contenedor no encontrado con ID:", contenedorId); // Log de contenedor no encontrado
         }
     };
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div class="d-flex justify-content-center">
+        <div class="spinner-border text-danger mt-5" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>;
     }
 
     if (!data || data.length === 0) {
@@ -79,11 +174,13 @@ function MapaAvanzadoView() {
     }
 
     // Filtrar los contenedores que correspondan a la torre y profundidad actual
-    const contenedoresFiltrados = data.filter(
-        (contenedor) =>
-            contenedor.ubicacionParseada.torre === torreActual &&
-            contenedor.ubicacionParseada.z === profundidadActual
-    );
+    const contenedoresFiltrados = data.filter((contenedor) => {
+        if (contenedor.ubicacionParseada) {
+            return contenedor.ubicacionParseada.torre === torreActual &&
+                contenedor.ubicacionParseada.z === profundidadActual;
+        }
+        return false;
+    });
 
     // Crear la cuadrícula
     const gridSize = 5;
@@ -145,36 +242,86 @@ function MapaAvanzadoView() {
     //AGREGAR
     const handleAgregarContenedor = (event) => {
         event.preventDefault();
+        
+        // Agrega un log para verificar los valores de los inputs
+        console.log("inputValue1:", inputValue1, "inputValue2:", inputValue2);
+        
         const nuevoContenedor = {
             contenedor: inputValue1,
             ubicacion: inputValue2
         };
+        
+        console.log("Intentando agregar contenedor:", nuevoContenedor); // Log antes de hacer la solicitud
+        console.log("Ubicación del contenedor a agregar:", nuevoContenedor.ubicacion);
         fetch("https://backend-production-d707.up.railway.app/api/contenedores", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(nuevoContenedor)
+            
         })
-            .then(response => response.json())
-            .then(data => {
-                setData([...data, nuevoContenedor]); // Actualiza el estado de datos con el nuevo contenedor
-                handleCloseAgregar(true);
-            })
-            .catch(error => console.error("Error agregando contenedor:", error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al agregar contenedor');
+            }
+            return response.json();
+        })
+        .then(data => {
+            setData(prevData => [...prevData, data]); // Usamos prevData para evitar un posible error de estado
+            setInputValue1("");
+            setInputValue2("");
+            handleCloseAgregar(); // Cierra el modal después de actualizar
+            //Toast con mensaje de exito 
+            toast.success('Contenedor agregado correctamente', {
+                duration: 4000,
+                position: 'bottom-right',
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                  },
+              });
+        })
+        .catch(error => {
+            console.error("Error agregando contenedor:", error); // Log del error
+        });
     };
+    
 
     //QUITAR
     const handleQuitarContenedor = (event) => {
         event.preventDefault();
+        console.log("Intentando quitar contenedor con ID:", inputValue3); // Log antes de la solicitud
+    
         fetch(`http://localhost:5000/api/contenedores/${inputValue3}`, {
             method: "DELETE"
         })
-            .then(response => response.json())
-            .then(data => {
-                setData(data.filter(c => c.id !== inputValue3)); // Actualiza el estado quitando el contenedor
-                setShowModalQuitar(false);
-            })
-            .catch(error => console.error("Error quitando contenedor:", error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al eliminar contenedor');
+            }
+            return response.json();
+        })
+        .then(() => {
+            // Filtramos el contenedor eliminado de los datos que tenemos en el estado
+            setData(prevData => prevData.filter(contenedor => contenedor.id !== contenedorId));
+            setInputValue3("");
+            handleCloseQuitar(); // Cierra el modal después de eliminar
+            //Toast con mensaje de exito 
+            toast('Contenedor eliminado correctamente', {
+                duration: 4000,
+                position: 'bottom-right',
+                // Custom Icon
+                icon: '🗑️',
+                style: {
+                    borderRadius: '10px',
+                    background: '#333',
+                    color: '#fff',
+                  },
+              });
+        })
+        .catch(error => console.error("Error eliminando contenedor:", error));
     };
+    
     
 
     return (
@@ -382,7 +529,7 @@ function MapaAvanzadoView() {
                     </div>
                 </div>
             </div>
-        
+            <Toaster />
         </div>
     );
 }

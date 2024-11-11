@@ -7,6 +7,18 @@ const contenedorRoutes = require('./routes/contenedorRoutes');
 const port = process.env.PORT || 5000;
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env'});
+const http = require('http');
+const { Server } = require('socket.io');
+
+// Crear el servidor HTTP
+const server = http.createServer(app);
+
+// Crear una instancia de Socket.IO y pasarle el servidor HTTP
+const io = new Server(server, {
+  cors: {
+    origin: '*', // Permitir todas las conexiones; configura el origen según sea necesario
+  },
+});
 
 // Middleware para analizar JSON
 app.use(express.json());
@@ -26,13 +38,24 @@ app.use(cors(corsOptions));
 
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
-app.use('/api', contenedorRoutes);
+app.use('/api', contenedorRoutes(io));
 
 // Cualquier ruta que no sea un archivo estático debe devolver el index.html
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
   });
 
-app.listen(port, () => {
+
+// Configuración de Socket.IO para conexión de clientes
+io.on('connection', (socket) => {
+  console.log('Cliente conectado:', socket.id);
+
+  // Desconexión de cliente
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado:', socket.id);
+  });
+});  
+
+server.listen(port, () => {
   console.log(`Servidor corriendo en el puerto ${port}`);
 });
