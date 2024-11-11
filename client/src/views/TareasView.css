@@ -1,0 +1,176 @@
+/* Estilo general */
+.metricas-container {
+    margin-left: 110px; /* Ajusta este valor para mover la tabla horizontalmente */
+    margin-right: 50px;
+    padding-top: 25px; 
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+
+
+/* Tabla Principal */
+.metricas-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 10px;  /* Redondeo de borde */
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.metricas-table th {
+    background-color: #cc0000;
+    color: #fff;
+    font-weight: bold;
+    padding: 12px;
+    text-align: left;
+    font-size: 16px;
+}
+
+.metricas-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    color: #333;
+}
+
+.metricas-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.metricas-row:hover {
+    background-color: #ffe6e6;
+}
+
+.selected-row {
+    background-color: #ffcccc;
+    color: #cc0000;
+    font-weight: bold;
+}
+
+.popup-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+
+/* Botón de Extracción */
+.extract-button {
+    padding: 10px 20px;
+    margin-top: 15px;
+    background-color: #cc0000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.extract-button:hover {
+    background-color: #b30000;
+}
+
+/* Tabla de Extracción */
+.extraction-table-container {
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 10px; /* Redondeo de borde */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Ocultar desbordamiento para respetar el redondeo */
+}
+
+.extraction-table {
+    width: 100%;
+    border-spacing: 0; /* Elimina espacio entre celdas para respetar el redondeo */
+    border-radius: 10px; /* Redondeo de borde */
+}
+
+.extraction-table th, .extraction-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.extraction-table th {
+    background-color: #cc0000;
+    color: #fff;
+    text-align: left;
+}
+
+/* Borde redondeado y sombra para ambas tablas */
+.metricas-table, .extraction-table-container {
+    border-radius: 10px; /* Establecer borde redondeado */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra para dar efecto de elevación */
+}
+
+/* Checklist */
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.checklist-item.completed {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.close-button {
+    padding: 10px 20px;
+    margin-top: 15px;
+    background-color: #cc0000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.close-button:hover {
+    background-color: #b30000;
+}
+
+.final-extract-button {
+    padding: 10px 20px;
+    margin-top: 15px;
+    background-color: #cc0000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.final-extract-button:hover {
+    background-color: #b30000;
+}
+
+.popup-content ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+/* Títulos de tablas */
+.table-title {
+    background-color: #cc0000;
+    color: white;
+    font-size: 16px;
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
