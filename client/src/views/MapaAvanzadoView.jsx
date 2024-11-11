@@ -17,6 +17,7 @@ function MapaAvanzadoView() {
     // Estado para almacenar los valores de los dos inputs
     const [inputValue1, setInputValue1] = useState('');
     const [inputValue2, setInputValue2] = useState('');
+    const [inputValue3, setInputValue3] = useState('');
 
 
     // Array con las torres extendidas
@@ -124,7 +125,7 @@ function MapaAvanzadoView() {
     const handleShowQuitar = () => setShowModalQuitar(true);
     const handleCloseQuitar = () => setShowModalQuitar(false);
 
-    //Funciones para el cambio del texto de los inputs del modal de AGREGAR CONTENEDOR
+    //Funciones para el cambio del texto de los inputs del modal de AGREGAR/ELIMINAR CONTENEDOR
         // Función para manejar el cambio en el primer input
         const handleInputChange1 = (event) => {
             setInputValue1(event.target.value);
@@ -135,6 +136,11 @@ function MapaAvanzadoView() {
             setInputValue2(event.target.value);
         };
 
+        // Función para manejar el cambio en el tercer input
+        const handleInputChange3 = (event) => {
+            setInputValue3(event.target.value);
+        };
+        
     //FUNCIONES PARA AGREGAR Y QUITAR CONTENEDORES DE LA BD
     //AGREGAR
     const handleAgregarContenedor = (event) => {
@@ -151,23 +157,24 @@ function MapaAvanzadoView() {
             .then(response => response.json())
             .then(data => {
                 setData([...data, nuevoContenedor]); // Actualiza el estado de datos con el nuevo contenedor
-                setShowModalAgregar(false);
+                handleCloseAgregar(true);
             })
             .catch(error => console.error("Error agregando contenedor:", error));
     };
 
     //QUITAR
-    // const handleQuitarContenedor = () => {
-    //     fetch(`http://localhost:5000/api/contenedores/${contenedorId}`, {
-    //         method: "DELETE"
-    //     })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             setData(data.filter(c => c.id !== contenedorId)); // Actualiza el estado quitando el contenedor
-    //             setShowModalQuitar(false);
-    //         })
-    //         .catch(error => console.error("Error quitando contenedor:", error));
-    // };
+    const handleQuitarContenedor = (event) => {
+        event.preventDefault();
+        fetch(`http://localhost:5000/api/contenedores/${inputValue3}`, {
+            method: "DELETE"
+        })
+            .then(response => response.json())
+            .then(data => {
+                setData(data.filter(c => c.id !== inputValue3)); // Actualiza el estado quitando el contenedor
+                setShowModalQuitar(false);
+            })
+            .catch(error => console.error("Error quitando contenedor:", error));
+    };
     
 
     return (
@@ -277,18 +284,22 @@ function MapaAvanzadoView() {
                         <div className="modal-header">
                             <h1 className="modal-title fs-5">Quitar contenedor</h1>
                             <button type="button" className="btn-close" onClick={handleCloseQuitar} aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <h6>ID</h6>
-                            <input type="text" placeholder="Ingresa el ID del contenedor" />
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" onClick={handleCloseQuitar}>
-                                Cerrar
-                            </button>
-                            <button type="button" className="btn btn-danger">
-                                Quitar
-                            </button>
+                            </div>
+                            <div className="modal-body">
+                            <form onSubmit={handleQuitarContenedor}>
+                                <div className="mb-3">
+                                <label htmlFor="inputData3" className="form-label">ID:</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="inputData3"
+                                    value={inputValue3}
+                                    onChange={handleInputChange3}
+                                    required
+                                />
+                                </div>
+                                <button type="submit" className="btn btn-danger">Quitar</button>
+                            </form>
                         </div>
                     </div>
                 </div>
