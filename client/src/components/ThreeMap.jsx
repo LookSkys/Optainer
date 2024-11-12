@@ -5,9 +5,13 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import floorTexturePath from '../assets/textura-pared-grunge.jpg';
 import { fetchContenedores } from './FetchContainer';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
+import { io } from "socket.io-client";
 
 const ThreeDMap = () => {
   const mountRef = useRef(null);
+  const rendererRef = useRef(null);  // Ref para el renderer
+  const animationFrameRef = useRef(null); // Ref para la animación
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const currentMount = mountRef.current;
@@ -72,7 +76,7 @@ const ThreeDMap = () => {
 
   
 
-    // Añadir luz direccional (simula el sol)
+    /* // Añadir luz direccional (simula el sol)
     const sunLight = new THREE.DirectionalLight(0xffffff, 1); // Luz blanca con intensidad 1
     sunLight.position.set(50, 100, 50); // Posicionar la luz en un ángulo alto
     sunLight.castShadow = true; // Habilitar sombras
@@ -86,7 +90,7 @@ const ThreeDMap = () => {
 
     // Habilitar sombras en el renderizador
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Tipo de sombra (suave)
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Tipo de sombra (suave) */
 
 
 
@@ -399,28 +403,35 @@ const ThreeDMap = () => {
                     const blockIndex = torres[torre];
                     updateContainer(blockGroup[blockIndex], { x: x, y: y, z: z }, true);
                     updateColorsInColumn(blockGroup[blockIndex])
-                    }
+                  }
             }
-            });
+          });
         } catch (error) {
-            console.error("Error al cargar los contenedores: ", error);
+          console.error("Error al cargar los contenedores: ", error);
         }
-        }
-
+      }
+  
+    const socket = io('http://localhost:5000');
     // Llamar a la función al montar el componente
+
     loadContenedores();
+
+    socket.on('contenedorActualizado', async (data) => {
+        console.log('Nuevo contenedor recibido:', data);
+        await loadContenedores(); // Actualiza la escena con los datos nuevos
+      });
 
 
     // Hacer que el piso reciba sombras
-    floor.receiveShadow = true;
+    //floor.receiveShadow = true;
 
 
     // Añadir luces
-    const ambientLight = new THREE.AmbientLight(0x404040, 2);
+    const ambientLight = new THREE.AmbientLight(0x404040, 3);
     scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(1, 1, 1).normalize();
+                                                        //0x404040
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+    directionalLight.position.set(1, 20, 20).normalize();
     scene.add(directionalLight);
 
     const pointLight = new THREE.PointLight(0xffffff, 1, 100);
@@ -442,23 +453,53 @@ const ThreeDMap = () => {
         camera.updateProjectionMatrix();
     });
 
+    let isRendering = true;
+     // Guardamos el renderer para poder accederlo desde el cleanup
+     rendererRef.current = renderer;
+
     function animate() {
-        requestAnimationFrame(animate);
+        if (!isRendering) return;
         controls.update();  // Actualiza los controles en cada cuadro
 
         renderer.render(scene, camera);
+        animationFrameRef.current = requestAnimationFrame(animate);
     }
 
     animate();
 
 
+    // Función de limpieza de recursos
+    const cleanup = () => {
+        if (animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current); // Detener la animación
+        }
+        if (rendererRef.current) {
+          rendererRef.current.dispose(); // Liberar recursos de renderer
+        }
+        scene.traverse((object) => {
+          if (object instanceof THREE.Mesh) {
+            if (object.geometry) object.geometry.dispose(); // Liberar geometrías
+            if (object.material) object.material.dispose(); // Liberar materiales
+          }
+        });
+        if (containerRef.current) {
+          containerRef.current.innerHTML = ''; // Limpiar el contenedor del DOM
+        }
+      };
+
+    const handleVisibilityChange = () => {
+        isRendering = !document.hidden; // Pausar si la pestaña está oculta
+        if (isRendering) {
+          animate(); // Reiniciar render loop si se vuelve visible
+        }
+      };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // Cleanup para que no se caiga al cambiar de página
     return () => {
-        if (currentMount) {
-            // Aquí detienes animaciones y limpias la escena
-            currentMount.removeChild(renderer.domElement); // Asegúrate de que el ref exista
-          }      
+        cleanup();
+        document.removeEventListener('visibilitychange', handleVisibilityChange);  
     };
   }, []);
 

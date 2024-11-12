@@ -1,5 +1,5 @@
 export const parseLocation = (ubicacion) => {
-    console.log("Ubicación recibida para parseo:", ubicacion);
+    //console.log("Ubicación recibida para parseo:", ubicacion);
     if (!ubicacion || typeof ubicacion !== 'string' || !ubicacion.includes('-')) {
         console.warn("Ubicación inválida detectada:", ubicacion);
         return null; // Retorna null si la ubicación no es válida
