@@ -34,7 +34,7 @@ function App() {
       <NavbarController />
       <Routes>
         <Route path="/" element={<LoginView />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/home" element={<Home socket={socket} />} />
         <Route path='/avanzado' element={<MapaAvanzadoView socket={socket} />} />
         <Route path='/tareas' element={<TareasView/>} />
       </Routes>

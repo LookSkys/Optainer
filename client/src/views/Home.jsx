@@ -3,7 +3,7 @@ import ThreeMap from '../components/ThreeMap';
 import ColorLegend from '../components/ColorLegend/ColorLegend';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 
-const Home = () => {
+const Home = ({ socket }) => {
   const [showThreeMap, setShowThreeMap] = useState(true);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Home = () => {
     <div className="home-container">
       <section className="map-container">
         <div id="three-map">
-          {showThreeMap && <ThreeMap />} {/* Monta o desmonta ThreeMap */}
+           {showThreeMap && <ThreeMap socket={socket}/>} {/* Monta o desmonta ThreeMap */}
         </div>
       </section>
       

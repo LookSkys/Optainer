@@ -20,6 +20,6 @@ export const parseLocation = (ubicacion) => {
 
 
 // Función para filtrar el contenedor por ID ESTO ES LO NUEVO
-export const filtrarContenedorPorId = (data, contenedorId) => {
+export const filtrarContenedorPorId = (data, contenedorId) => { 
     return data.find((contenedor) => contenedor.contenedor === contenedorId);
 };

@@ -1,26 +1,30 @@
 // Mapa del patio de contenedores
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import floorTexturePath from '../assets/textura-pared-grunge.jpg';
 import { fetchContenedores } from './FetchContainer';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
-import { io } from "socket.io-client";
+import { parseLocation , filtrarContenedorPorId} from "../views/utils";
 
-const ThreeDMap = () => {
+const ThreeDMap = ({socket}) => {
   const mountRef = useRef(null);
   const rendererRef = useRef(null);  // Ref para el renderer
+  const sceneRef = useRef(null);
+  const cameraRef = useRef(null);
   const animationFrameRef = useRef(null); // Ref para la animación
   const containerRef = useRef(null);
+  const columnHeights = useRef({});
 
   useEffect(() => {
     const currentMount = mountRef.current;
     
     // Configuración básica de Three.js
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    sceneRef.current = new THREE.Scene();
+    cameraRef.current = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight); // Usar el tamaño del contenedor
+    renderer.setPixelRatio(window.devicePixelRatio / 2);
     mountRef.current.appendChild(renderer.domElement);
 
     const canvas = document.createElement('canvas');
@@ -40,11 +44,11 @@ const ThreeDMap = () => {
     const gradientTexture = new THREE.Texture(canvas);
     gradientTexture.needsUpdate = true; // Indica que la textura necesita ser actualizada
 
-    scene.background = gradientTexture; // Asigna la textura como fondo
+    sceneRef.current.background = gradientTexture; // Asigna la textura como fondo
 
 
-    camera.position.set(20, 10, 15);  // Cambia las coordenadas para ubicar la cámara
-    camera.lookAt(20, 5, 5);  // Apunta la cámara a la coordenada (opcional)
+    cameraRef.current.position.set(20, 10, 15);  // Cambia las coordenadas para ubicar la cámara
+    cameraRef.current.lookAt(20, 5, 5);  // Apunta la cámara a la coordenada (opcional)
 
     // Establecer el color de fondo a gris claro
     //renderer.setClearColor(0xd3d3d3); // Color gris claro en hexadecimal
@@ -72,27 +76,7 @@ const ThreeDMap = () => {
     floor.rotation.x = -Math.PI / 2;
     floor.position.x = 20;
     floor.position.y = 0.5;
-    scene.add(floor);
-
-  
-
-    /* // Añadir luz direccional (simula el sol)
-    const sunLight = new THREE.DirectionalLight(0xffffff, 1); // Luz blanca con intensidad 1
-    sunLight.position.set(50, 100, 50); // Posicionar la luz en un ángulo alto
-    sunLight.castShadow = true; // Habilitar sombras
-    scene.add(sunLight);
-
-    // Opcional: Configurar sombras para la luz direccional
-    sunLight.shadow.mapSize.width = 1024; // Tamaño del mapa de sombras
-    sunLight.shadow.mapSize.height = 1024;
-    sunLight.shadow.camera.near = 0.5;
-    sunLight.shadow.camera.far = 500;
-
-    // Habilitar sombras en el renderizador
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Tipo de sombra (suave) */
-
-
+    sceneRef.current.add(floor);
 
     // Dimensiones del prisma rectangular
     const width = 1; // Ancho del prisma
@@ -136,10 +120,10 @@ const ThreeDMap = () => {
     const edgesMaterialRefee = new THREE.LineBasicMaterial({ color: 0x888888, linewidth: 1 }); // Gris suave
 
     // Crear un bloque de contenedores (espacios vacíos)
-    function createBlock(blockX, blockY, blockZ) {
+    const createBlock = (blockX, blockY, blockZ) => {
         const blockGroup = new THREE.Group();
         blockGroup.position.set(blockX, blockY, blockZ);
-        scene.add(blockGroup);
+        sceneRef.current.add(blockGroup);
 
         for (let col = 1; col < 6; col++) { // Columnas (de izquierda a derecha)
             for (let row = 1; row < 4; row++) { // Filas (de adelante hacia atrás)
@@ -170,10 +154,10 @@ const ThreeDMap = () => {
         return blockGroup;
     }
 
-    function createBlockRefee(blockX, blockY, blockZ) {
+    const createBlockRefee = (blockX, blockY, blockZ) => {
         const blockGroup = new THREE.Group();
         blockGroup.position.set(blockX, blockY, blockZ);
-        scene.add(blockGroup);
+        sceneRef.current.add(blockGroup);
 
         for (let col = 1; col < 2; col++) { // Columnas (de izquierda a derecha)
             for (let row = 1; row < 15; row++) { // Filas (de adelante hacia atrás)
@@ -231,7 +215,7 @@ const ThreeDMap = () => {
 
 
     // Función para actualizar los colores de los contenedores en cada fila-columna según su altura
-    function updateColorsInColumn(block) {
+    const updateColorsInColumn = (block) => {
         //console.log("Actualizando colores de columnas y filas...");
         const blockId = block.position.x;
         // Iterar sobre todas las claves de columnHeights
@@ -276,10 +260,9 @@ const ThreeDMap = () => {
     }
 
     // Objeto para mantener la altura actual de cada fila-columna
-    const columnHeights = {};
 
     // Modificar la función `updateContainer`
-    function updateContainer(block, position, isContained) {
+    const updateContainer = (block, position, isContained) => {
         const { x, y, z } = position;
 
         // Convertir a índices de fila y columna
@@ -367,11 +350,10 @@ const ThreeDMap = () => {
         updateColorsInColumn(block);
     }
 
+    const torres = {"A": 0,"B": 1,"C": 2,"D": 3,"E": 4,"F": 5,"G": 6};
     async function loadContenedores() {
-        const torres = {"A": 0,"B": 1,"C": 2,"D": 3,"E": 4,"F": 5,"G": 6};
         try {
           const contenedoresData = await fetchContenedores();
-
           const contenedoresOrdenados = contenedoresData
             .filter(contenedor => {
                 const { ubicacionParseada } = contenedor;
@@ -382,15 +364,13 @@ const ThreeDMap = () => {
                 const alturaB = b.ubicacionParseada.z;
                 const torreA = torres[a.ubicacionParseada.torre];
                 const torreB = torres[b.ubicacionParseada.torre];
-
+    
                 // Primero comparamos por torre (A, B, C, etc.) y luego por altura
                 if (torreA === torreB) {
                     return alturaA - alturaB; // Ordenar por altura si son de la misma torre
                 }
                 return torreA - torreB; // Ordenar por torre
             });
-
-
 
             contenedoresOrdenados.forEach(contenedor => {
             const { id, ubi, ubicacionParseada, zona, visado} = contenedor;
@@ -410,36 +390,61 @@ const ThreeDMap = () => {
           console.error("Error al cargar los contenedores: ", error);
         }
       }
-  
-    const socket = io('http://localhost:5000');
-    // Llamar a la función al montar el componente
 
     loadContenedores();
 
-    socket.on('contenedorActualizado', async (data) => {
-        console.log('Nuevo contenedor recibido:', data);
-        await loadContenedores(); // Actualiza la escena con los datos nuevos
-      });
+    if(socket) {
+        socket.on('contenedorActualizado', async (data) => {
+            if (data.tipo === 'eliminar'){
+                /* try {
+                    const contenedoresData = await fetchContenedores();
+                    const contenedorEncontrado = filtrarContenedorPorId(contenedoresData, data.id);
+                    console.log('Data: ', contenedoresData)
+                    console.log('Data id', data.id)
+                    console.log('contenedor encontrado: ', contenedorEncontrado)
+                    console.log('Info data: ', data)
+                    contenedoresData.forEach(contenedor => {
+                    const { id, ubi, ubicacionParseada, zona, visado} = contenedor;
+                    //console.log(ubicacionParseada)
+                    const { torre, z, x, y, original } = ubicacionParseada;
+                    //console.log(torre, z,x,y)
+                    
+                    if(id === data.id) {
+                        console.log(ubicacionParseada)
+                    }
+                  });
+                } catch (error) {
+                    console.error("Error el contenedor: ", error);
+                  } */
+                console.log('data Info: ', data);
 
-
-    // Hacer que el piso reciba sombras
-    //floor.receiveShadow = true;
-
+            }
+            if (data.tipo === 'agregar') {
+                console.log(data.contenedor)
+                console.log(data.contenedor.Ubicación)
+                const ubicacionParseada = parseLocation(data.contenedor.Ubicación);
+                const { torre, z, x, y, original } = ubicacionParseada;
+                const blockIndex = torres[torre];
+                updateContainer(blockGroup[blockIndex], { x: x, y: y, z: z }, true);
+                updateColorsInColumn(blockGroup[blockIndex])
+            }
+          });
+    }
 
     // Añadir luces
     const ambientLight = new THREE.AmbientLight(0x404040, 3);
-    scene.add(ambientLight);
+    sceneRef.current.add(ambientLight);
                                                         //0x404040
     const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
     directionalLight.position.set(1, 20, 20).normalize();
-    scene.add(directionalLight);
+    sceneRef.current.add(directionalLight);
 
     const pointLight = new THREE.PointLight(0xffffff, 1, 100);
     pointLight.position.set(10, 10, 10);
-    scene.add(pointLight);
+    sceneRef.current.add(pointLight);
 
     // Añadir los controles de órbita
-    const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(cameraRef.current, renderer.domElement);
     controls.enableDamping = true;  // Suaviza los movimientos
     controls.dampingFactor = 0.05;  // Ajusta el efecto de suavizado
     controls.target.set(21, 5, 2);  // Mantén el foco en el origen (o cualquier punto)
@@ -449,19 +454,19 @@ const ThreeDMap = () => {
         const width = mountRef.current.clientWidth;
         const height = mountRef.current.clientHeight;
         renderer.setSize(width, height);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
+        cameraRef.current.aspect = width / height;
+        cameraRef.current.updateProjectionMatrix();
     });
 
     let isRendering = true;
      // Guardamos el renderer para poder accederlo desde el cleanup
      rendererRef.current = renderer;
 
-    function animate() {
+    const animate = () => {
         if (!isRendering) return;
         controls.update();  // Actualiza los controles en cada cuadro
 
-        renderer.render(scene, camera);
+        renderer.render(sceneRef.current, cameraRef.current);
         animationFrameRef.current = requestAnimationFrame(animate);
     }
 
@@ -476,7 +481,7 @@ const ThreeDMap = () => {
         if (rendererRef.current) {
           rendererRef.current.dispose(); // Liberar recursos de renderer
         }
-        scene.traverse((object) => {
+        sceneRef.current.traverse((object) => {
           if (object instanceof THREE.Mesh) {
             if (object.geometry) object.geometry.dispose(); // Liberar geometrías
             if (object.material) object.material.dispose(); // Liberar materiales
@@ -498,10 +503,18 @@ const ThreeDMap = () => {
 
     // Cleanup para que no se caiga al cambiar de página
     return () => {
+        if (socket) {
+            socket.off('contenedorActualizado');
+          }
         cleanup();
+        renderer.dispose(); // Libera el renderer al desmontar
+        renderer.forceContextLoss(); 
         document.removeEventListener('visibilitychange', handleVisibilityChange);  
+        
     };
-  }, []);
+  }, [socket]);
+
+
 
   return <div style={{ width: 'calc(100vw - <navbar-width>)', height: '100vh', overflow: 'hidden' }}>
         <div ref={mountRef} style={{ width: '100%', height: '100%' }} />

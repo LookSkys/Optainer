@@ -66,7 +66,19 @@ function MapaAvanzadoView({socket}) {
                     console.log("ID del contenedor a eliminar:", idEliminar);
     
                     setData((dataActual) => {
-                        return dataActual.filter(c => c.contenedor !== idEliminar);
+                        // Busca el contenedor en data usando el ID para obtener su ubicación
+                        const contenedorAEliminar = dataActual.find(c => c.contenedor === idEliminar);
+    
+                        if (contenedorAEliminar) {
+                            const ubicacionAEliminar = contenedorAEliminar.ubicacion;
+                            console.log("Ubicación del contenedor a eliminar:", ubicacionAEliminar);
+    
+                            // Filtrar data para eliminar el contenedor según la ubicación en lugar del ID
+                            return dataActual.filter(c => c.ubicacion !== ubicacionAEliminar);
+                        } else {
+                            console.warn("Contenedor con ID no encontrado para eliminación:", idEliminar);
+                            return dataActual; // Sin cambios si no encuentra el ID
+                        }
                     });
                     console.log("Contenedor eliminado con ID:", idEliminar);
                     return;
