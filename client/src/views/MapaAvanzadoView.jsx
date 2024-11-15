@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
-import { BarraTorres } from "../components/BarraTorres/BarraTorres";
 import './MapaAvanzadoView.css'; // Importa el archivo CSS aquí
 import { parseLocation, filtrarContenedorPorId } from "./utils"; // Importa las funciones desde utils ACA SE AGREGA LA FUNCION DE FILTRAR POR ID
-import { FaSearch, FaPlus, FaTruckMoving } from "react-icons/fa";
-import {Toaster, toast} from 'react-hot-toast'
+import { BotonAgregarContenedor } from "../components/BotonAgregarContenedor/BotonAgregarContenedor";
+import { BarraTorres } from "../components/BarraTorres/BarraTorres";
+import { BotonEliminarContenedor } from "../components/BotonEliminarContenedor/BotonEliminarContenedor";
+import { BuscadorContenedor } from "../components/BuscadorContenedor/BuscadorContenedor";
+import { NumerosLateralDerecha } from "../components/NumerosLateralDerecha/NumerosLateralDerecha";
+import { NumerosAbajo } from "../components/NumerosAbajo/NumerosAbajo";
+import { BotonesProfundidad } from "../components/BotonesProfundidad/BotonesProfundidad";
+import { GrillaContenedores } from "../components/GrillaContenedores/GrillaContenedores";
+import HoraActual from "../components/HoraActual/HoraActual";
 
 function MapaAvanzadoView({socket}) {
     const [data, setData] = useState(null);
@@ -12,13 +18,6 @@ function MapaAvanzadoView({socket}) {
     const [torreActual, setTorreActual] = useState('A'); // Nueva torre actual
     const [contenedorId, setContenedorId] = useState(""); // Estado para el ID del contenedor ESTO SE AGREGA
     const [contenedorResaltado, setContenedorResaltado] = useState(""); // Estado para el contenedor resaltado ESTO SE AGREGA
-    const [showModalAgregar, setShowModalAgregar] = useState(false); //Estado para las funciones de mostrar y cerrar el modal de agregar
-    const [showModalQuitar, setShowModalQuitar] = useState(false);  //Estado para las funciones de mostrar y cerrar el modal de quitar
-    // Estado para almacenar los valores de los dos inputs
-    const [inputValue1, setInputValue1] = useState('');
-    const [inputValue2, setInputValue2] = useState('');
-    const [inputValue3, setInputValue3] = useState('');
-
 
     // Array con las torres extendidas
     const torres = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
@@ -140,19 +139,7 @@ function MapaAvanzadoView({socket}) {
         };
     }, [socket]);
     
-    
-    
-    
-    
-      
-
-    // Función para cambiar la torre
-    // const cambiarTorre = (nuevaTorre) => {
-    //     setTorreActual(nuevaTorre);
-    //     setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA
-    //     setContenedorId(""); // Limpiar el ID del contenedor al cambiar de torre ESTO SE AGREGA
-    // };
-
+    //FUNCIONES
     // Función para cambiar la profundidad
     const cambiarProfundidad = (nuevaProfundidad) => {
         setProfundidadActual(nuevaProfundidad);
@@ -174,9 +161,9 @@ function MapaAvanzadoView({socket}) {
     };
 
     if (loading) {
-        return <div class="d-flex justify-content-center">
-        <div class="spinner-border text-danger mt-5" role="status">
-          <span class="visually-hidden">Loading...</span>
+        return <div className="d-flex justify-content-center">
+        <div className="spinner-border text-danger mt-5" role="status">
+          <span className="visually-hidden">Loading...</span>
         </div>
       </div>;
     }
@@ -226,101 +213,6 @@ function MapaAvanzadoView({socket}) {
         setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA        
     };
 
-    //Funciones para mostrar y cerrar modal de agregar
-    const handleShowAgregar = () => setShowModalAgregar(true);
-    const handleCloseAgregar = () => setShowModalAgregar(false);
-
-    //Funciones para mostrar y cerrar modal de quitar
-    const handleShowQuitar = () => setShowModalQuitar(true);
-    const handleCloseQuitar = () => setShowModalQuitar(false);
-
-    //Funciones para el cambio del texto de los inputs del modal de AGREGAR/ELIMINAR CONTENEDOR
-        // Función para manejar el cambio en el primer input
-        const handleInputChange1 = (event) => {
-            setInputValue1(event.target.value);
-        };
-
-        // Función para manejar el cambio en el segundo input
-        const handleInputChange2 = (event) => {
-            setInputValue2(event.target.value);
-        };
-
-        // Función para manejar el cambio en el tercer input
-        const handleInputChange3 = (event) => {
-            setInputValue3(event.target.value);
-        };
-        
-    //FUNCIONES PARA AGREGAR Y QUITAR CONTENEDORES DE LA BD
-    //AGREGAR
-    const handleAgregarContenedor = (event) => {
-        event.preventDefault();
-        
-        // Log para ver los datos de los inputs por consola
-        console.log("inputValue1:", inputValue1, "inputValue2:", inputValue2);
-        
-        // Se verifica si el contenedor ya existe antes de intentar agregarlo
-        verificarContenedorExistente(inputValue1, inputValue2)
-            .then(existe => {
-                if (existe) {
-                    // Si el contenedor ya existe se muestra el toast y no se hace el POST
-                    toast.error('El contenedor ya existe', {
-                        duration: 4000,
-                        position: 'bottom-right',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    });
-                    return console.log("El contenedor ya existe D:"); // Salimos de la función sin hacer el POST
-                } 
-    
-                // Si no existe el contenedor en la BD se hace la solicitud POST
-                const nuevoContenedor = {
-                    contenedor: inputValue1,
-                    ubicacion: inputValue2
-                };
-                
-                console.log("Intentando agregar contenedor:", nuevoContenedor); // Log antes de hacer la solicitud
-                console.log("Ubicación del contenedor a agregar:", nuevoContenedor.ubicacion);
-                
-                fetch("https://backend-production-d707.up.railway.app/api/contenedores", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(nuevoContenedor)
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error al agregar contenedor');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    setData(prevData => [...prevData, data]); // Usamos prevData para evitar un posible error de estado
-                    setInputValue1("");
-                    setInputValue2("");
-                    handleCloseAgregar(); // Cierra el modal después de actualizar
-                    
-                    // Toast con mensaje de éxito
-                    toast.success('Contenedor agregado correctamente', {
-                        duration: 4000,
-                        position: 'bottom-right',
-                        style: {
-                            borderRadius: '10px',
-                            background: '#333',
-                            color: '#fff',
-                        },
-                    });
-                })
-                .catch(error => {
-                    console.error("Error agregando contenedor:", error); // Log del error
-                });
-            })
-            .catch(error => {
-                console.error("Error al verificar existencia del contenedor:", error); // Log del error
-            });
-    };
-
     // Función para verificar si el contenedor ya existe en la BD
     const verificarContenedorExistente = async (contenedor, ubicacion) => {
         try {
@@ -335,6 +227,7 @@ function MapaAvanzadoView({socket}) {
             
             // Se busca si ya existe un contenedor con el mismo nombre o ubicación
             const existe = data.some(item => item.contenedor === contenedor || item.ubicacion === ubicacion);
+            console.log(existe)
             
             return existe; // Retorna true si existe un contenedor con la misma ubicación o nombre
         } catch (error) {
@@ -344,267 +237,30 @@ function MapaAvanzadoView({socket}) {
     };
         
 
-    //QUITAR
-    const handleQuitarContenedor = (event) => {
-        event.preventDefault();
-        console.log("Intentando quitar contenedor con ID:", inputValue3); // Log antes de la solicitud
-    
-        // La funcion recibe solo un input, el segundo recibe undefined
-        verificarContenedorExistente(inputValue3)
-        .then(existe => {
-            if (!existe) {
-                // Si el contenedor no existe, se muestra el toast y no se hace el DELETE con el contenedor
-                toast.error('El contenedor NO existe', {
-                    duration: 4000,
-                    position: 'bottom-right',
-                    style: {
-                        borderRadius: '10px',
-                        background: '#333',
-                        color: '#fff',
-                    },
-                });
-                return console.log("El contenedor no existe D:"); // Salimos de la funcion sin hacer el DELETE
-            }
-             
-        fetch(`https://backend-production-d707.up.railway.app/api/contenedores/${inputValue3}`, {
-            method: "DELETE"
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al eliminar contenedor');
-            }
-            return response.json();
-        })
-        .then(() => {
-            // Filtramos el contenedor eliminado de los datos que tenemos en el estado
-            setData(prevData => prevData.filter(contenedor => contenedor.id !== contenedorId));
-            setInputValue3("");
-            handleCloseQuitar(); // Cierra el modal después de eliminar
-            //Toast con mensaje de exito 
-            toast('Contenedor eliminado correctamente', {
-                duration: 4000,
-                position: 'bottom-right',
-                // Custom Icon
-                icon: '🗑️',
-                style: {
-                    borderRadius: '10px',
-                    background: '#333',
-                    color: '#fff',
-                  },
-              });
-        })
-        })
-        .catch(error => console.error("Error eliminando contenedor:", error));
-    };
-    
-    
-
     return (
         <div style={{marginLeft: '95px'}}>
-            <h2>INVENTARIO AVANZADO</h2>
+            <div className="row">
+                <div className="col"><h2>INVENTARIO AVANZADO</h2></div>
+                <div className="col"><HoraActual /></div>
+            </div>      
             <BarraTorres torreActual={torreActual} anteriorTorre={retrocederTorre} siguienteTorre={avanzarTorre}/>
             <div className="row">
-    {/* Buscador centrado */}
-    <div className="col-md-6 d-flex align-items-center justify-content-center" style={{ marginBottom: '20px' }}>
-        <div className="d-flex align-items-center">
-            <input
-                type="text"
-                placeholder="Ingresa el ID del contenedor"
-                value={contenedorId}
-                onChange={(e) => setContenedorId(e.target.value)}
-                style={{
-                    padding: '8px 12px',
-                    borderRadius: '30px',
-                    border: '1px solid #ccc',
-                    marginRight: '10px',
-                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-                    width: '250px',
-                }}
-            />
-            <button
-                onClick={filtrarContenedor}
-                style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#1d1e1e',
-                    color: 'white',
-                    border: 'none',
-                    cursor: 'pointer',
-                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-                    padding: 0,
-                    overflow: 'hidden',
-                }}
-            >
-                <FaSearch style={{ fontSize: '20px', margin: 0 }} />
-            </button>
-        </div>
-    </div>
-
-    {/* Botones a la derecha */}
-    <div className="col-md-6 d-flex justify-content-center align-items-center">
-        <button type="button" className="btn btn-danger" onClick={handleShowAgregar} style={{width:'40px', height:'40px', marginRight: '5px', borderRadius: '50%', alignItems:'center', padding: 0}}>
-            <FaPlus />
-        </button>
-        <button type="button" className="btn btn-danger" onClick={handleShowQuitar} style={{width:'40px', height:'40px',borderRadius: '50%', alignItems: 'center', padding: 0}}>
-            <FaTruckMoving />
-        </button>
-    </div>
-
-    {/* Modales de Agregar y Quitar */}
-    {showModalAgregar && (
-        <>
-            <div className="modal show fade d-block" tabIndex="-1" style={{ display: 'block' }} role="dialog">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h1 className="modal-title fs-5">Agregar contenedor</h1>
-                            <button type="button" className="btn-close" onClick={handleCloseAgregar} aria-label="Close"></button>
-                        </div>
-                        <div className="modal-body">
-                            <form onSubmit={handleAgregarContenedor}>
-                                <div className="mb-3">
-                                <label htmlFor="inputData1" className="form-label">ID:</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="inputData1"
-                                    value={inputValue1}
-                                    onChange={handleInputChange1}
-                                    required
-                                />
-                                </div>
-                                <div className="mb-3">
-                                <label htmlFor="inputData2" className="form-label">Ubicacion:</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="inputData2"
-                                    value={inputValue2}
-                                    onChange={handleInputChange2}
-                                    required
-                                />
-                                </div>
-                                <button type="submit" className="btn btn-success">Agregar</button>
-                            </form>
-                        </div>
-                    </div>
+                <div className="col">
+                    <BuscadorContenedor contenedorId={contenedorId} setContenedorId={setContenedorId} filtrarContenedor={filtrarContenedor}/>
+                </div>
+                <div className="col-md-6 d-flex justify-content-center align-items-center">
+                    <BotonAgregarContenedor verificarContenedorExistente={verificarContenedorExistente} setData={setData} data={data}/> 
+                    <BotonEliminarContenedor verificarContenedorExistente={verificarContenedorExistente} setData={setData} data={data} contenedorID={contenedorId}/>
                 </div>
             </div>
-            <div className="modal-backdrop fade show" onClick={handleCloseAgregar}></div>
-        </>
-    )}
-
-    {showModalQuitar && (
-        <>
-            <div className="modal show fade d-block" tabIndex="-1" style={{ display: 'block' }} role="dialog">
-                <div className="modal-dialog">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h1 className="modal-title fs-5">Quitar contenedor</h1>
-                            <button type="button" className="btn-close" onClick={handleCloseQuitar} aria-label="Close"></button>
-                            </div>
-                            <div className="modal-body">
-                            <form onSubmit={handleQuitarContenedor}>
-                                <div className="mb-3">
-                                <label htmlFor="inputData3" className="form-label">ID:</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="inputData3"
-                                    value={inputValue3}
-                                    onChange={handleInputChange3}
-                                    required
-                                />
-                                </div>
-                                <button type="submit" className="btn btn-danger">Quitar</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="modal-backdrop fade show" onClick={handleCloseQuitar}></div>
-        </>
-    )}
-</div>
-
-
-
-
-
-            {/* Cuadrícula 2D con el eje Y invertido */}
             <div className="row">
-                <div className="col-1">
-                    <br /><h2>5</h2> <br /><br /><br />
-                    <h2>4</h2> <br /><br /><br />
-                    <h2>3</h2> <br /><br /><br />
-                    <h2>2</h2> <br /> <br /> <br />
-                    <h2>1</h2> 
-                </div>
+                <NumerosLateralDerecha />
                 <div className="col-10">
-                <div className="grid-container">
-                {grid.slice().reverse().map((fila, filaIndex) => (
-                    <div key={filaIndex} className="grid-row">
-                        {fila.map((contenedor, colIndex) => {
-                            const isHighlighted = contenedor && contenedor.contenedor === contenedorResaltado; // Comprobar si es el contenedor resaltado DESDE ACA
-                            return (
-                                <div
-                                    key={colIndex}
-                                    className={`grid-cell ${isHighlighted ? "highlight" : ""}`} // Aplicar clase 'highlight' si es el contenedor buscado HASTA ACA
-                                >
-                                    {contenedor ? (
-                                        <>
-                                            <div>ID: {contenedor.contenedor}</div>
-                                            <div>Ubicación: {contenedor.ubicacionParseada.ubicacionOriginal}</div>
-                                        </>
-                                    ) : (
-                                        "Vacío"
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                ))}
-            </div>
-                    {/* Fila con numeros abajo */}
-                    <div className="row">
-                        <div className="col text-center">
-                            <h2>1</h2>
-                        </div>
-                        <div className="col text-center">
-                            <h2>2</h2>
-                        </div>
-                        <div className="col text-center">
-                            <h2>3</h2>
-                        </div>
-                        <div className="col text-center">
-                            <h2>4</h2>
-                        </div>
-                        <div className="col text-center">
-                            <h2>5</h2>
-                        </div>
-                    </div>
+                    <GrillaContenedores grid={grid} contenedorResaltado={contenedorResaltado}/>
+                    <NumerosAbajo />
                 </div>
-                <div className="col-1" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                    <div>
-                        {[1, 2, 3].map((nivel) => (
-                            <div className="row" key={nivel}>
-                                <button 
-                                    type="button" 
-                                    className={`btn boton-profundidad ${profundidadActual === nivel ? 'boton-seleccionado' : 'boton-no-seleccionado'}`}
-                                    onClick={() => cambiarProfundidad(nivel)}
-                                >
-                                    {nivel}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+                <BotonesProfundidad profundidadActual={profundidadActual} cambiarProfundidad={cambiarProfundidad}/>
             </div>
-            <Toaster />
         </div>
     );
 }
