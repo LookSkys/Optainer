@@ -255,55 +255,117 @@ function MapaAvanzadoView({socket}) {
     const handleAgregarContenedor = (event) => {
         event.preventDefault();
         
-        // Agrega un log para verificar los valores de los inputs
+        // Log para ver los datos de los inputs por consola
         console.log("inputValue1:", inputValue1, "inputValue2:", inputValue2);
         
-        const nuevoContenedor = {
-            contenedor: inputValue1,
-            ubicacion: inputValue2
-        };
-        
-        console.log("Intentando agregar contenedor:", nuevoContenedor); // Log antes de hacer la solicitud
-        console.log("Ubicación del contenedor a agregar:", nuevoContenedor.ubicacion);
-        fetch("https://backend-production-d707.up.railway.app/api/contenedores", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(nuevoContenedor)
-            
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al agregar contenedor');
-            }
-            return response.json();
-        })
-        .then(data => {
-            setData(prevData => [...prevData, data]); // Usamos prevData para evitar un posible error de estado
-            setInputValue1("");
-            setInputValue2("");
-            handleCloseAgregar(); // Cierra el modal después de actualizar
-            //Toast con mensaje de exito 
-            toast.success('Contenedor agregado correctamente', {
-                duration: 4000,
-                position: 'bottom-right',
-                style: {
-                    borderRadius: '10px',
-                    background: '#333',
-                    color: '#fff',
-                },
-            });
-        })
-        .catch(error => {
-            console.error("Error agregando contenedor:", error); // Log del error
-        });
-    };
+        // Se verifica si el contenedor ya existe antes de intentar agregarlo
+        verificarContenedorExistente(inputValue1, inputValue2)
+            .then(existe => {
+                if (existe) {
+                    // Si el contenedor ya existe se muestra el toast y no se hace el POST
+                    toast.error('El contenedor ya existe', {
+                        duration: 4000,
+                        position: 'bottom-right',
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    });
+                    return console.log("El contenedor ya existe D:"); // Salimos de la función sin hacer el POST
+                } 
     
+                // Si no existe el contenedor en la BD se hace la solicitud POST
+                const nuevoContenedor = {
+                    contenedor: inputValue1,
+                    ubicacion: inputValue2
+                };
+                
+                console.log("Intentando agregar contenedor:", nuevoContenedor); // Log antes de hacer la solicitud
+                console.log("Ubicación del contenedor a agregar:", nuevoContenedor.ubicacion);
+                
+                fetch("https://backend-production-d707.up.railway.app/api/contenedores", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(nuevoContenedor)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al agregar contenedor');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    setData(prevData => [...prevData, data]); // Usamos prevData para evitar un posible error de estado
+                    setInputValue1("");
+                    setInputValue2("");
+                    handleCloseAgregar(); // Cierra el modal después de actualizar
+                    
+                    // Toast con mensaje de éxito
+                    toast.success('Contenedor agregado correctamente', {
+                        duration: 4000,
+                        position: 'bottom-right',
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    });
+                })
+                .catch(error => {
+                    console.error("Error agregando contenedor:", error); // Log del error
+                });
+            })
+            .catch(error => {
+                console.error("Error al verificar existencia del contenedor:", error); // Log del error
+            });
+    };
+
+    // Función para verificar si el contenedor ya existe en la BD
+    const verificarContenedorExistente = async (contenedor, ubicacion) => {
+        try {
+            // Hacer la solicitud GET a la API para obtener todos los contenedores
+            const response = await fetch("https://backend-production-d707.up.railway.app/api/contenedores");
+            
+            if (!response.ok) {
+                throw new Error('Error al obtener contenedores');
+            }
+            
+            const data = await response.json();
+            
+            // Se busca si ya existe un contenedor con el mismo nombre o ubicación
+            const existe = data.some(item => item.contenedor === contenedor || item.ubicacion === ubicacion);
+            
+            return existe; // Retorna true si existe un contenedor con la misma ubicación o nombre
+        } catch (error) {
+            console.error("Error en la verificación:", error);
+            throw error;
+        }
+    };
+        
 
     //QUITAR
     const handleQuitarContenedor = (event) => {
         event.preventDefault();
         console.log("Intentando quitar contenedor con ID:", inputValue3); // Log antes de la solicitud
     
+        // La funcion recibe solo un input, el segundo recibe undefined
+        verificarContenedorExistente(inputValue3)
+        .then(existe => {
+            if (!existe) {
+                // Si el contenedor no existe, se muestra el toast y no se hace el DELETE con el contenedor
+                toast.error('El contenedor NO existe', {
+                    duration: 4000,
+                    position: 'bottom-right',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                });
+                return console.log("El contenedor no existe D:"); // Salimos de la funcion sin hacer el DELETE
+            }
+             
         fetch(`https://backend-production-d707.up.railway.app/api/contenedores/${inputValue3}`, {
             method: "DELETE"
         })
@@ -328,8 +390,9 @@ function MapaAvanzadoView({socket}) {
                     borderRadius: '10px',
                     background: '#333',
                     color: '#fff',
-                },
-            });
+                  },
+              });
+        })
         })
         .catch(error => console.error("Error eliminando contenedor:", error));
     };
