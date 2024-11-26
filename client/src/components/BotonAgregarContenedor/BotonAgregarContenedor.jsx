@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Toaster, toast } from "react-hot-toast";
+import useVerificarContenedorExistente from "../../hooks/useVerificarContenedorExistente";
 
-export function BotonAgregarContenedor ({verificarContenedorExistente, setData, data}) {
+export function BotonAgregarContenedor ({ setData, data}) {
     //ESTADOS
     //Estado para las funciones de mostrar y cerrar el modal de agregar
     const [showModalAgregar, setShowModalAgregar] = useState(false); 
     //Estados para los valores de los inputs del modal
     const [inputValue1, setInputValue1] = useState('');
     const [inputValue2, setInputValue2] = useState('');
+
+    const { verificarContenedorExistente, loading, error, existe } = useVerificarContenedorExistente(); // Usamos el hook
 
     //FUNCIONES
     //Funciones para mostrar y cerrar modal de agregar

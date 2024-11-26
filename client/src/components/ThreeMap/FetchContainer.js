@@ -1,4 +1,4 @@
-import { parseLocation } from "../views/utils";
+import { parseLocation } from "../../utilities/FormatUbicacion";
 
 export async function fetchContenedores() {
     try {

@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import floorTexturePath from '../assets/textura-pared-grunge.jpg';
+import floorTexturePath from '../../assets/textura-pared-grunge.jpg';
 import { fetchContenedores } from './FetchContainer';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js';
 import { io } from "socket.io-client";
@@ -110,7 +110,7 @@ const ThreeDMap = () => {
     let containerGeometry; // Variable para almacenar la geometría del modelo
 
     const loader = new STLLoader();
-    const modelPath = new URL('../models/CONTAINER.STL', import.meta.url).href;
+    const modelPath = new URL('../../models/CONTAINER.STL', import.meta.url).href;
 
     loader.load(
         modelPath,

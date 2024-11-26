@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import io from 'socket.io-client'; // Importa socket.io-client
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import LoginView from './views/LoginView';
-import Home from './views/Home';
-import MapaAvanzadoView  from './views/MapaAvanzadoView'
-import MetricasView from './views/MetricasView'
-import TareasView from './views/TareasView';
+import LoginView from './views/LoginView/LoginView';
+import Home from './views/Home/Home';
+import MapaAvanzadoView from './views/MapaAvanzadoView/MapaAvanzadoView';
+import TareasView from './views/TareasView/TareasView';
 import SideBarLateral from './components/SideBarLateral/SideBarLateral'
 import './App.css';
 

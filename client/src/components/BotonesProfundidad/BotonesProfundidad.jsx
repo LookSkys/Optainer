@@ -1,3 +1,5 @@
+import './BotonesProfundidad.css'
+
 export function BotonesProfundidad ({profundidadActual, cambiarProfundidad}) {
     return(
         <div className="col-1" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>

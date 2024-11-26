@@ -1,3 +1,5 @@
+import './GrillaContenedores.css';
+
 export function GrillaContenedores ({grid, contenedorResaltado}) {
 
     return(

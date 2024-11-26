@@ -1,0 +1,24 @@
+.boton-profundidad {
+    width: 50px;
+    margin-bottom: 20px;
+
+}
+
+.boton-seleccionado {
+    background-color: #FF0000; 
+    color: white;
+}
+
+.boton-seleccionado:hover {
+    background-color: #f70909; 
+    color: white;
+}
+
+.boton-no-seleccionado {
+    background-color: #ccc; /* Un gris claro */
+    color: black;
+}
+
+.boton-no-seleccionado:hover {
+    background-color: #a7a5a5; /* Gris un poco más oscuro cuando se hace hover */
+}

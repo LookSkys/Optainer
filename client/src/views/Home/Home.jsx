@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import ThreeMap from '../components/ThreeMap';
-import ColorLegend from '../components/ColorLegend/ColorLegend';
+//import ThreeMap from '../components/ThreeMap/ThreeMap';
+import ThreeDMap from '../../components/ThreeMap/ThreeMap';
+//import ColorLegend from '../components/ColorLegend/ColorLegend';
+import ColorLegend from '../../components/ColorLegend/ColorLegend';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 const Home = () => {
@@ -27,7 +29,7 @@ const Home = () => {
     <div className="home-container">
       <section className="map-container">
         <div id="three-map">
-          {showThreeMap && <ThreeMap />} {/* Monta o desmonta ThreeMap */}
+          {showThreeMap && <ThreeDMap />} {/* Monta o desmonta ThreeMap */}
         </div>
       </section>
       

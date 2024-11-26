@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
-import './MapaAvanzadoView.css'; // Importa el archivo CSS aquí
-import { parseLocation, filtrarContenedorPorId } from "./utils"; // Importa las funciones desde utils ACA SE AGREGA LA FUNCION DE FILTRAR POR ID
-import { BotonAgregarContenedor } from "../components/BotonAgregarContenedor/BotonAgregarContenedor";
-import { BarraTorres } from "../components/BarraTorres/BarraTorres";
-import { BotonEliminarContenedor } from "../components/BotonEliminarContenedor/BotonEliminarContenedor";
-import { BuscadorContenedor } from "../components/BuscadorContenedor/BuscadorContenedor";
-import { NumerosLateralDerecha } from "../components/NumerosLateralDerecha/NumerosLateralDerecha";
-import { NumerosAbajo } from "../components/NumerosAbajo/NumerosAbajo";
-import { BotonesProfundidad } from "../components/BotonesProfundidad/BotonesProfundidad";
-import { GrillaContenedores } from "../components/GrillaContenedores/GrillaContenedores";
-import HoraActual from "../components/HoraActual/HoraActual";
+import { parseLocation, filtrarContenedorPorId } from "../../utilities/FormatUbicacion"; // Importa las funciones desde utils ACA SE AGREGA LA FUNCION DE FILTRAR POR ID
+//import de componentes
+import { BotonAgregarContenedor, BarraTorres, BotonEliminarContenedor, BuscadorContenedor, NumerosLateralDerecha, NumerosAbajo, BotonesProfundidad, GrillaContenedores } from "../../components";
+import HoraActual from "../../components/HoraActual/HoraActual";
+
 
 function MapaAvanzadoView({socket}) {
     const [data, setData] = useState(null);
@@ -201,30 +195,6 @@ function MapaAvanzadoView({socket}) {
         setContenedorResaltado(""); // Restablecer el contenedor resaltado al cambiar de torre ESTO SE AGREGA        
     };
 
-    // Función para verificar si el contenedor ya existe en la BD
-    const verificarContenedorExistente = async (contenedor, ubicacion) => {
-        try {
-            // Hacer la solicitud GET a la API para obtener todos los contenedores
-            const response = await fetch("https://backend-production-d707.up.railway.app/api/contenedores");
-            
-            if (!response.ok) {
-                throw new Error('Error al obtener contenedores');
-            }
-            
-            const data = await response.json();
-            
-            // Se busca si ya existe un contenedor con el mismo nombre o ubicación
-            const existe = data.some(item => item.contenedor === contenedor || item.ubicacion === ubicacion);
-            console.log(existe)
-            
-            return existe; // Retorna true si existe un contenedor con la misma ubicación o nombre
-        } catch (error) {
-            console.error("Error en la verificación:", error);
-            throw error;
-        }
-    };
-        
-
     return (
         <div style={{marginLeft: '95px'}}>
             <div className="row">
@@ -237,8 +207,8 @@ function MapaAvanzadoView({socket}) {
                     <BuscadorContenedor contenedorId={contenedorId} setContenedorId={setContenedorId} filtrarContenedor={filtrarContenedor}/>
                 </div>
                 <div className="col-md-6 d-flex justify-content-center align-items-center">
-                    <BotonAgregarContenedor verificarContenedorExistente={verificarContenedorExistente} setData={setData} data={data}/> 
-                    <BotonEliminarContenedor verificarContenedorExistente={verificarContenedorExistente} setData={setData} data={data} contenedorID={contenedorId}/>
+                    <BotonAgregarContenedor setData={setData} data={data}/> 
+                    <BotonEliminarContenedor setData={setData} data={data} contenedorID={contenedorId}/>
                 </div>
             </div>
             <div className="row">

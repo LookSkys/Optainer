@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { FaTruckMoving } from "react-icons/fa";
 import { Toaster, toast } from "react-hot-toast";
+import useVerificarContenedorExistente from "../../hooks/useVerificarContenedorExistente";
 
-export function BotonEliminarContenedor ({verificarContenedorExistente, setData, data}) {
+export function BotonEliminarContenedor ({ setData, data}) {
     //ESTADOS
     //Estado para las funciones de mostrar y cerrar el modal de eliminar
     const [showModalQuitar, setShowModalQuitar] = useState(false); 
@@ -11,6 +12,7 @@ export function BotonEliminarContenedor ({verificarContenedorExistente, setData,
     //Estado para el ID del contenedor 
     const [contenedorId, setContenedorId] = useState(""); 
 
+    const { verificarContenedorExistente, loading, error, existe } = useVerificarContenedorExistente(); // Usamos el hook
     //FUNCIONES
     //Funciones para mostrar y cerrar modal de eliminar
     const handleShowQuitar = () => setShowModalQuitar(true);
